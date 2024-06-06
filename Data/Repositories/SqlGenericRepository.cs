@@ -3,6 +3,7 @@ using EntityModels.Interfaces;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+#nullable disable
 
 namespace Data.Repositories;
 

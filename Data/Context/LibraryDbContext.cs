@@ -2,6 +2,7 @@
 using EntityModels.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Data.Context;
 
@@ -9,6 +10,22 @@ public class LibraryDbContext : IdentityDbContext, IDbContext
 {
     public LibraryDbContext() { }
     public LibraryDbContext(DbContextOptions<LibraryDbContext> options) : base(options) { }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        var envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+        var builder = new ConfigurationBuilder()
+                                .SetBasePath(Directory.GetCurrentDirectory())
+                                .AddJsonFile("appsettings.json", optional: false)
+                                .AddJsonFile($"appsetting.{envName}.json", optional: true);
+
+        var conf = builder.Build();
+
+        var connString = conf.GetConnectionString("DefaultConnection");
+
+        optionsBuilder.UseSqlServer(connString);
+    }
 
     public virtual DbSet<Subcategory> Subcategory { get; set; }
     public virtual DbSet<Category> Category { get; set; }

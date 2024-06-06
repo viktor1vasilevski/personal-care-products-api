@@ -1,4 +1,8 @@
 using Data.Context;
+using Data.Repositories;
+using EntityModels.Interfaces;
+using Main.Interfaces;
+using Main.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +16,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<LibraryDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped(typeof(IUnitOfWork<>), typeof(SqlUnitOfWork<>));
+
+builder.Services.AddScoped<IProductService, ProductService>();
+//builder.Services.AddTransient<ICustom, MyService>();
 
 var app = builder.Build();
 
