@@ -1,5 +1,4 @@
 ﻿using EntityModels.Models.Base;
-#nullable disable
 
 namespace EntityModels.Models;
 

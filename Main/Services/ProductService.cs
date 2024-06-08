@@ -18,7 +18,7 @@ public class ProductService : IProductService
 
     public IEnumerable<Product> GetProducts()
     {
-        var products = _productRepository.Get();
+        var products = _productRepository.GetAsQueryable();
         return products;
     }
 }

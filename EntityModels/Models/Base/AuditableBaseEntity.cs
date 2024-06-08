@@ -1,5 +1,4 @@
 ﻿namespace EntityModels.Models.Base;
-#nullable enable
 
 public abstract class AuditableBaseEntity : BaseEntity
 {
