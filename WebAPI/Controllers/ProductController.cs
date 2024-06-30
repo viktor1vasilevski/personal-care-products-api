@@ -17,7 +17,9 @@ public class ProductController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        var p = _productService.GetProducts();
+        int skip = 0;
+        int take = 10;
+        var p = _productService.GetProducts("Soaps", "Beard", skip, take);
         return Ok(p);
     }
 

@@ -4,5 +4,5 @@ namespace Main.Interfaces;
 
 public interface IProductService
 {
-    IEnumerable<Product> GetProducts();
+    IEnumerable<Product> GetProducts(string category, string subcategory, int skip, int take);
 }
