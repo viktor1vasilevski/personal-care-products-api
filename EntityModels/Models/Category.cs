@@ -6,5 +6,5 @@ public class Category : AuditableBaseEntity
 {
     public string Name { get; set; }
 
-    public IEnumerable<Subcategory> Subcategory { get; set; }
+    public ICollection<Subcategory> Subcategory { get; set; }
 }

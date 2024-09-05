@@ -20,7 +20,7 @@ public class ProductController : ControllerBase
         int skip = 0;
         int take = 10;
         var p = _productService.GetProducts("Soaps", "Beard", skip, take);
-        return Ok(p);
+        return Ok(p.ToList());
     }
 
 }
