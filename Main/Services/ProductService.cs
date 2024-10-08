@@ -1,6 +1,10 @@
 ﻿using Data.Context;
 using EntityModels.Interfaces;
 using EntityModels.Models;
+using Main.DTOs;
+using Main.DTOs.Product;
+using Main.DTOs.Responses;
+using Main.Extensions;
 using Main.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,49 +21,50 @@ public class ProductService : IProductService
         _productRepository = _uow.GetGenericRepository<Product>();
     }
 
-    public IEnumerable<ProductDto> GetProducts(string category, string subCategory, int skip, int take)
+    public ApiResponse<List<ProductDTO>> GetProducts(string? category, string? subCategory, int? skip, int? take)
     {
-        var products = _productRepository.GetAsQueryable(
-            x => x.Subcategory.Category.Name.ToLower() == category.ToLower() &&
-                 x.Subcategory.Name.ToLower() == subCategory.ToLower(),
-            null,
-            x => x.Include(x => x.Subcategory)
-                  .ThenInclude(sc => sc.Category)
-        );
-
-
-
-        products = products.Skip(skip).Take(take);
-
-        var productDtos = products.Select(x => new ProductDto
+        try
         {
-            Id = x.Id,
-            Brand = x.Brand,
-            Description = x.Description,
-            UnitPrice = x.UnitPrice,
-            UnitQuantity = x.UnitQuantity,
-            Volume = x.Volume,
-            Scent = x.Scent,
-            Edition = x.Edition,
-            SubcategoryName = x.Subcategory.Name,
-            CategoryName = x.Subcategory.Category.Name
-        }).ToList();
+            var products = _productRepository.GetAsQueryable(null, null,
+                        x => x.Include(x => x.Subcategory).ThenInclude(sc => sc.Category));
 
-        return productDtos;
+            products = products
+                .WhereIf(!String.IsNullOrEmpty(category), x => x.Subcategory.Category.Name.ToLower() == category.ToLower())
+                .WhereIf(!String.IsNullOrEmpty(subCategory), x => x.Subcategory.Name.ToLower() == subCategory.ToLower());
+
+            if (skip.HasValue)
+                products = products.Skip(skip.Value);
+
+            if (take.HasValue)
+                products = products.Take(take.Value);
+
+            var productsDTO = products.Select(x => new ProductDTO
+            {
+                Id = x.Id,
+                Brand = x.Brand,
+                Description = x.Description,
+                UnitPrice = x.UnitPrice,
+                UnitQuantity = x.UnitQuantity,
+                Volume = x.Volume,
+                Scent = x.Scent,
+                Edition = x.Edition,
+                Category = x.Subcategory.Category.Name,
+                Subcategory = x.Subcategory.Name,
+                Created = x.Created,
+                CreatedBy = x.CreatedBy,
+                LastModified = x.LastModified,
+                LastModifiedBy = x.LastModifiedBy
+            }).ToList();
+
+            return new ApiResponse<List<ProductDTO>>() { Data = productsDTO, Success = true };
+        }
+        catch (Exception ex)
+        {
+            return new ApiResponse<List<ProductDTO>>() { Success = false, Message = "Se desi zbunka", ExceptionMessage = ex.Message };
+        }
+        
     }
 
-    public class ProductDto
-    {
-        public Guid Id { get; set; }
-        public string Brand { get; set; }
-        public string Description { get; set; }
-        public decimal UnitPrice { get; set; }
-        public int UnitQuantity { get; set; }
-        public int? Volume { get; set; }
-        public string? Scent { get; set; }
-        public string? Edition { get; set; }
-        public string SubcategoryName { get; set; }
-        public string CategoryName { get; set; }
-    }
+
 
 }

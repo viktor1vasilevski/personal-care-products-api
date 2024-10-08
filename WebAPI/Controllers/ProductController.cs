@@ -14,13 +14,11 @@ public class ProductController : ControllerBase
     }
 
 
-    [HttpGet]
-    public IActionResult Get()
+    [HttpGet("GetAll")]
+    public IActionResult Get(string? category, string? subCategory, int? skip, int? take)
     {
-        int skip = 0;
-        int take = 10;
-        var p = _productService.GetProducts("Soaps", "Beard", skip, take);
-        return Ok(p.ToList());
+        var response = _productService.GetProducts(category, subCategory, skip, take);
+        return Ok(response);
     }
 
 }

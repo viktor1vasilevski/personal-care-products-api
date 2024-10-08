@@ -1,4 +1,5 @@
 using Data.Context;
+using Data.Extensions;
 using Data.Repositories;
 using EntityModels.Interfaces;
 using Main.Interfaces;
@@ -13,8 +14,6 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
 
-
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -27,11 +26,14 @@ builder.Services.AddCors(policy => policy.AddPolicy("MyPolicy", builder =>
 builder.Services.AddDbContext<LibraryDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddIdentityInfrastructure();
+
 builder.Services.AddScoped(typeof(IUnitOfWork<>), typeof(SqlUnitOfWork<>));
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ISubcategoryService, SubcategoryService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 
 var app = builder.Build();
@@ -48,6 +50,8 @@ app.UseHttpsRedirection();
 app.UseCors("MyPolicy");
 
 app.UseAuthorization();
+
+app.UseAuthentication();
 
 app.MapControllers();
 

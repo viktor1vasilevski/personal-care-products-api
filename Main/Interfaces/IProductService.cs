@@ -1,9 +1,10 @@
-﻿using EntityModels.Models;
-using static Main.Services.ProductService;
+﻿using Main.DTOs;
+using Main.DTOs.Product;
+using Main.DTOs.Responses;
 
 namespace Main.Interfaces;
 
 public interface IProductService
 {
-    IEnumerable<ProductDto> GetProducts(string category, string subcategory, int skip, int take);
+    ApiResponse<List<ProductDTO>> GetProducts(string? category, string? subcategory, int? skip, int? take);
 }

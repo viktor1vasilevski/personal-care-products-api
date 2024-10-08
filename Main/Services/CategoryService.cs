@@ -1,6 +1,9 @@
 ﻿using Data.Context;
 using EntityModels.Interfaces;
 using EntityModels.Models;
+using Main.DTOs.Category;
+using Main.DTOs.Responses;
+using Main.DTOs.Subcategory;
 using Main.Interfaces;
 
 namespace Main.Services;
@@ -14,8 +17,34 @@ public class CategoryService : ICategoryService
         _uow = uow;
         _categoryRepository = _uow.GetGenericRepository<Category>();
     }
-    public IEnumerable<Category> GetCategories()
+
+    public ApiResponse<List<CategoryDTO>> GetCategories(int? skip, int? take)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var categories = _categoryRepository.GetAsQueryable(null, null, null);
+
+            if (skip.HasValue)
+                categories = categories.Skip(skip.Value);
+
+            if (take.HasValue)
+                categories = categories.Take(take.Value);
+
+            var categoriesDTO = categories.Select(x => new CategoryDTO
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Created = x.Created,
+                CreatedBy = x.CreatedBy,
+                LastModified = x.LastModified,
+                LastModifiedBy = x.LastModifiedBy
+            }).ToList();
+
+            return new ApiResponse<List<CategoryDTO>>() { Data = categoriesDTO, Success = true };
+        }
+        catch (Exception ex)
+        {
+            return new ApiResponse<List<CategoryDTO>>() { Success = false, Message = "Se desi zbunka", ExceptionMessage = ex.Message };
+        }
     }
 }
