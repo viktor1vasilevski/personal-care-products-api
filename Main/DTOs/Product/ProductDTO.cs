@@ -10,6 +10,7 @@ public class ProductDTO
     public int? Volume { get; set; }
     public string? Scent { get; set; }
     public string? Edition { get; set; }
+    public byte[] ImageData { get; set; }
     public string Category { get; set; }
     public string Subcategory { get; set; }
     public virtual string CreatedBy { get; set; }

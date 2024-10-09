@@ -6,7 +6,7 @@ public class Product : AuditableBaseEntity
 {
     public string Brand { get; set; }
     public string Description { get; set; }
-    public int UnitPrice { get; set; }
+    public decimal UnitPrice { get; set; }
     public int UnitQuantity { get; set; }
     public int? Volume { get; set; }
     public string? Scent { get; set; }
