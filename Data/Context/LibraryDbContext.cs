@@ -29,6 +29,7 @@ public class LibraryDbContext : IdentityDbContext, IDbContext
 
     public virtual DbSet<Subcategory> Subcategory { get; set; }
     public virtual DbSet<Category> Category { get; set; }
+    public virtual DbSet<Product> Product { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
