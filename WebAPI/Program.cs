@@ -2,17 +2,39 @@ using Data.Context;
 using Data.Extensions;
 using Data.Repositories;
 using EntityModels.Interfaces;
+using Main.DTOs.Responses;
 using Main.Interfaces;
 using Main.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
-        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles)
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var response = new ApiResponse<object>
+            {
+                Success = false,
+                Message = "One or more validation errors occurred.",
+                Errors = new Dictionary<string, string[]>()
+            };
+
+            foreach (var modelState in context.ModelState)
+            {
+                if (modelState.Value.Errors.Count > 0)
+                {
+                    response.Errors[modelState.Key] = modelState.Value.Errors.Select(e => e.ErrorMessage).ToArray();
+                }
+            }
+
+            return new BadRequestObjectResult(response);
+        };
+    }); ;
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

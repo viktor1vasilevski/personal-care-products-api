@@ -1,4 +1,5 @@
-﻿using Main.Interfaces;
+﻿using Main.DTOs.Product;
+using Main.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
@@ -14,10 +15,20 @@ public class ProductController : ControllerBase
     }
 
 
-    [HttpGet("GetAll")]
+    [HttpGet("Get")]
     public IActionResult Get(string? category, string? subCategory, int? skip, int? take)
     {
         var response = _productService.GetProducts(category, subCategory, skip, take);
+        return Ok(response);
+    }
+
+    [HttpPost("Create")]
+    public IActionResult Insert(ProductCreateDTO model)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var response = _productService.CreateProduct(model);
         return Ok(response);
     }
 

@@ -1,24 +1,29 @@
 ﻿using Data.Context;
+using Data.Migrations;
 using EntityModels.Interfaces;
 using EntityModels.Models;
+using Main.Constants;
 using Main.DTOs;
 using Main.DTOs.Product;
 using Main.DTOs.Responses;
 using Main.Extensions;
 using Main.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace Main.Services;
 
 public class ProductService : IProductService
 {
-    private IUnitOfWork<LibraryDbContext> _uow;
-    private IGenericRepository<Product> _productRepository;
+    private readonly IUnitOfWork<LibraryDbContext> _uow;
+    private readonly IGenericRepository<Product> _productRepository;
+    private readonly IGenericRepository<Subcategory> _subcategoryRepository;
 
     public ProductService(IUnitOfWork<LibraryDbContext> uow)
     {
         _uow = uow;
         _productRepository = _uow.GetGenericRepository<Product>();
+        _subcategoryRepository = _uow.GetGenericRepository<Subcategory>();
     }
 
     public ApiResponse<List<ProductDTO>> GetProducts(string? category, string? subCategory, int? skip, int? take)
@@ -41,6 +46,7 @@ public class ProductService : IProductService
             var productsDTO = products.Select(x => new ProductDTO
             {
                 Id = x.Id,
+                Name = x.Name,
                 Brand = x.Brand,
                 Description = x.Description,
                 UnitPrice = x.UnitPrice,
@@ -65,6 +71,47 @@ public class ProductService : IProductService
         
     }
 
+    public ApiResponse<ProductCreateDTO> CreateProduct(ProductCreateDTO model)
+    {
+        try
+        {
+            var subcategory = _subcategoryRepository.GetByID(model.SubcategoryId);
+            if (subcategory is null)
+                return new ApiResponse<ProductCreateDTO> { Success = false, Message = SubcategoryConstants.SUBCATEGORY_NOT_EXIST };
 
+            var entity = new Product
+            {
+                Name = model.Name,
+                Brand = model.Brand,
+                Description = model.Description,
+                Edition = model.Edition,
+                Scent = model.Scent,
+                Volume = model.Volume,
+                UnitPrice = model.UnitPrice,
+                UnitQuantity = model.UnitQuantity,
+                //ImageData = model.ImageData,
+                SubcategoryId = model.SubcategoryId,
 
+            };
+
+            _productRepository.Insert(entity);
+            _uow.SaveChanges();
+
+            return new ApiResponse<ProductCreateDTO>
+            {
+                Success = true,
+                Data = model,
+                Message = ProductConstants.SUCCESSFULLY_CREATED_PRODUCT
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ApiResponse<ProductCreateDTO>()
+            {
+                Success = false,
+                Message = ProductConstants.ERROR_CREATING_PRODUCT,
+                ExceptionMessage = ex.Message
+            };
+        }
+    }
 }
