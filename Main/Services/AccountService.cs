@@ -1,4 +1,5 @@
-﻿using Main.Constants;
+﻿using Azure;
+using Main.Constants;
 using Main.DTOs.Account;
 using Main.DTOs.Responses;
 using Main.Interfaces;
@@ -88,16 +89,26 @@ public class AccountService : IAccountService
         };
     }
 
-    public async Task<ApiResponse<BaseResponse>> Logout()
+    public async Task<ApiResponse<LogoutResponse>> Logout()
     {
         try
         {
             await _signInManager.SignOutAsync();
-            return new ApiResponse<BaseResponse> { Success = true, Message = AccountConstants.SUCCESSFULLY_LOGGED_OUT };
+            return new ApiResponse<LogoutResponse> 
+            { 
+                Success = true, 
+                Data = new LogoutResponse { IsLoggedOut = true }, 
+                Message = AccountConstants.SUCCESSFULLY_LOGGED_OUT 
+            };
         }
         catch (Exception ex)
         {
-            return new ApiResponse<BaseResponse> { Success = true, Message = AccountConstants.ERROR_LOGGING_OUT, ExceptionMessage = ex.Message };
+            return new ApiResponse<LogoutResponse> 
+            { 
+                Success = false, 
+                Message = AccountConstants.ERROR_LOGGING_OUT, 
+                ExceptionMessage = ex.Message 
+            };
         }
     }
 
@@ -105,6 +116,8 @@ public class AccountService : IAccountService
     {
         try
         {
+            var response= new ApiResponse<IdentityUser>();
+
             IdentityUser user = new IdentityUser()
             {
                 UserName = model.UserName,
@@ -121,25 +134,30 @@ public class AccountService : IAccountService
                     await AddRole("User");
                 }
 
-                var roleResult = await _userManager.AddToRoleAsync(user, "User");
+                var roleResult = await _userManager.AddToRoleAsync(user, "ss");
                 if (roleResult.Succeeded)
                 {
-                    return new ApiResponse<IdentityUser> { Data = user, Success = true, Message = AccountConstants.REGISTRATION_WAS_SUCCESS };
+                    response.Data = user;
+                    response.Success = true;
+                    response.Message = AccountConstants.REGISTRATION_WAS_SUCCESS;
+                    return response;
                 }
 
-                //foreach (var error in roleResult.Errors)
-                //{
-                //    ModelState.AddModelError(error.Code, error.Description);
-                //}
+                foreach (var error in roleResult.Errors)
+                {
+                    response.Errors[error.Code] = response.Errors[error.Code].Append(error.Description).ToArray();
+                    response.Errors.Add(error.Code, new[] { error.Description });
+                }
+
+                return response;
             }
 
-            // ovde bi mozel da naprav custom classa shto kje gi polni grteskite
-
-            //foreach (var error in userResult.Errors)
-            //{
-            //    ModelState.AddModelError(error.Code, error.Description);
-            //}
-            return new ApiResponse<IdentityUser> { Success = false, Message = AccountConstants.REGISTRATION_ERROR };
+            foreach (var error in userResult.Errors)
+            {
+                response.Errors[error.Code] = response.Errors[error.Code].Append(error.Description).ToArray();
+                response.Errors.Add(error.Code, new[] { error.Description });
+            }
+            return new ApiResponse<IdentityUser> { Success = false, Message = AccountConstants.REGISTRATION_ERROR, Errors = response.Errors };
         }
         catch (Exception ex)
         {

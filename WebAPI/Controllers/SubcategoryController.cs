@@ -14,10 +14,10 @@ public class SubcategoryController : ControllerBase
     }
 
 
-    [HttpGet("GetAll")]
-    public IActionResult Get()
+    [HttpGet("Get")]
+    public IActionResult Get(int? skip, int? take)
     {
-        var response = _subcategoryService.GetSubcategories(0, 10);
+        var response = _subcategoryService.GetSubcategories(skip, take);
         return Ok(response);
     }
 }

@@ -1,15 +1,12 @@
 ﻿using Data.Context;
-using Data.Migrations;
 using EntityModels.Interfaces;
 using EntityModels.Models;
 using Main.Constants;
-using Main.DTOs;
 using Main.DTOs.Product;
 using Main.DTOs.Responses;
 using Main.Extensions;
 using Main.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 
 namespace Main.Services;
 
@@ -37,6 +34,8 @@ public class ProductService : IProductService
                 .WhereIf(!String.IsNullOrEmpty(category), x => x.Subcategory.Category.Name.ToLower() == category.ToLower())
                 .WhereIf(!String.IsNullOrEmpty(subCategory), x => x.Subcategory.Name.ToLower() == subCategory.ToLower());
 
+            var totalCount = products.Count();
+
             if (skip.HasValue)
                 products = products.Skip(skip.Value);
 
@@ -62,11 +61,21 @@ public class ProductService : IProductService
                 LastModifiedBy = x.LastModifiedBy
             }).ToList();
 
-            return new ApiResponse<List<ProductDTO>>() { Data = productsDTO, Success = true };
+            return new ApiResponse<List<ProductDTO>>() 
+            { 
+                Success = true, 
+                Data = productsDTO, 
+                TotalCount = totalCount
+            };
         }
         catch (Exception ex)
         {
-            return new ApiResponse<List<ProductDTO>>() { Success = false, Message = "Se desi zbunka", ExceptionMessage = ex.Message };
+            return new ApiResponse<List<ProductDTO>>() 
+            { 
+                Success = false, 
+                Message = ProductConstants.ERROR_RETRIEVING_PRODUCTS, 
+                ExceptionMessage = ex.Message 
+            };
         }
         
     }

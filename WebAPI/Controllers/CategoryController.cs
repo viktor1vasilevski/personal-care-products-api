@@ -14,10 +14,10 @@ public class CategoryController : ControllerBase
     }
 
 
-    [HttpGet("GetAll")]
-    public IActionResult Get()
+    [HttpGet("Get")]
+    public IActionResult Get(int? skip, int? take)
     {
-        var response = _categoryService.GetCategories(0, 10);
+        var response = _categoryService.GetCategories(skip, take);
         return Ok(response);
     }
 }

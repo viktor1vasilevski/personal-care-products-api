@@ -1,6 +1,7 @@
 ﻿using Data.Context;
 using EntityModels.Interfaces;
 using EntityModels.Models;
+using Main.Constants;
 using Main.DTOs.Category;
 using Main.DTOs.Responses;
 using Main.DTOs.Subcategory;
@@ -40,11 +41,20 @@ public class CategoryService : ICategoryService
                 LastModifiedBy = x.LastModifiedBy
             }).ToList();
 
-            return new ApiResponse<List<CategoryDTO>>() { Data = categoriesDTO, Success = true };
+            return new ApiResponse<List<CategoryDTO>>() 
+            { 
+                Success = true, 
+                Data = categoriesDTO
+            };
         }
         catch (Exception ex)
         {
-            return new ApiResponse<List<CategoryDTO>>() { Success = false, Message = "Se desi zbunka", ExceptionMessage = ex.Message };
+            return new ApiResponse<List<CategoryDTO>>() 
+            { 
+                Success = false, 
+                Message = CategoryConstants.ERROR_RETRIEVING_CATEGORIES, 
+                ExceptionMessage = ex.Message 
+            };
         }
     }
 }

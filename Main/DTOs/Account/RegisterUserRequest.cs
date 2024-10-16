@@ -10,8 +10,7 @@ public class RegisterUserRequest
     [Required, EmailAddress]
     public string Email { get; set; }
 
-    [Required]
-    [RegularExpression(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$")]
+    [Required, RegularExpression(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$")]
     public string Password { get; set; }
 
     [Required, Compare("Password")]

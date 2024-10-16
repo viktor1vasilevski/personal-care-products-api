@@ -1,7 +1,7 @@
 ﻿using Data.Context;
 using EntityModels.Interfaces;
 using EntityModels.Models;
-using Main.DTOs.Product;
+using Main.Constants;
 using Main.DTOs.Responses;
 using Main.DTOs.Subcategory;
 using Main.Interfaces;
@@ -40,11 +40,20 @@ public class SubcategoryService : ISubcategoryService
                 LastModifiedBy = x.LastModifiedBy
             }).ToList();
 
-            return new ApiResponse<List<SubcategoryDTO>>() { Data = subcategoriesDTO, Success = true };
+            return new ApiResponse<List<SubcategoryDTO>>() 
+            { 
+                Success = true,
+                Data = subcategoriesDTO
+            };
         }
         catch (Exception ex)
         {
-            return new ApiResponse<List<SubcategoryDTO>>() { Success = false, Message = "Se desi zbunka", ExceptionMessage = ex.Message };
+            return new ApiResponse<List<SubcategoryDTO>>() 
+            { 
+                Success = false, 
+                Message = SubcategoryConstants.ERROR_RETRIEVING_SUBCATEGORIES, 
+                ExceptionMessage = ex.Message 
+            };
         }
     }
 }
