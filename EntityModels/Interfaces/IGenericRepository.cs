@@ -17,7 +17,7 @@ public interface IGenericRepository<TEntity> where TEntity : class
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null);
     TEntity GetByID(object id);
-    void Insert(TEntity entity);
+    TEntity Insert(TEntity entity);
     void InsertRange(IEnumerable<TEntity> entities);
     void Update(TEntity entity);
     void UpdateWithRelatedEntities(TEntity entity);

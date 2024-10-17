@@ -1,5 +1,6 @@
 ﻿using Main.DTOs.Account;
 using Main.DTOs.Responses;
+using Main.Responses;
 using Microsoft.AspNetCore.Identity;
 
 namespace Main.Interfaces;

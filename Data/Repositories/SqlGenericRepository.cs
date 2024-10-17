@@ -101,9 +101,10 @@ public class SqlGenericRepository<TEntity, TContext> : IGenericRepository<TEntit
         return dbSet.Find(id);
     }
 
-    public void Insert(TEntity entity)
+    public TEntity Insert(TEntity entity)
     {
         dbSet.Add(entity);
+        return entity;
     }
 
     public void InsertRange(IEnumerable<TEntity> entities)

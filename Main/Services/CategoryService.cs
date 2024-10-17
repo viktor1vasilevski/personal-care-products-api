@@ -4,8 +4,8 @@ using EntityModels.Models;
 using Main.Constants;
 using Main.DTOs.Category;
 using Main.DTOs.Responses;
-using Main.DTOs.Subcategory;
 using Main.Interfaces;
+using Main.Responses;
 
 namespace Main.Services;
 
@@ -54,6 +54,55 @@ public class CategoryService : ICategoryService
                 Success = false, 
                 Message = CategoryConstants.ERROR_RETRIEVING_CATEGORIES, 
                 ExceptionMessage = ex.Message 
+            };
+        }
+    }
+
+    public SingleResponse<CategoryDTO> CreateCategory(string name)
+    {
+        try
+        {
+            if (!String.IsNullOrEmpty(name))
+            {
+                var categoryExist = _categoryRepository.Exists(x => x.Name.ToLower() == name.ToLower());
+                if (categoryExist)
+                    return new SingleResponse<CategoryDTO>() { Success = false, Message = CategoryConstants.CATEGORY_EXISTS };
+
+                var entity = _categoryRepository.Insert(new Category { Name = name });
+                _uow.SaveChanges();
+
+                return new SingleResponse<CategoryDTO>()
+                {
+                    Success = true,
+                    Message = CategoryConstants.SUCCESSFULLY_CREATED_CATEGORY,
+                    Data = new CategoryDTO
+                    {
+                        Id = entity.Id,
+                        Name = entity.Name,
+                        Created = entity.Created,
+                        CreatedBy = entity.CreatedBy,
+                        LastModified = entity.LastModified,
+                        LastModifiedBy = entity.LastModifiedBy
+                    },
+                };
+            }
+            else
+            {
+                return new SingleResponse<CategoryDTO>() 
+                { 
+                    Success = false, 
+                    Message = CategoryConstants.CATEGORY_NAME_IS_EMPTY 
+                };
+            }
+            
+        }
+        catch (Exception ex)
+        {
+            return new SingleResponse<CategoryDTO> 
+            { 
+                Success = false,
+                Message = CategoryConstants.ERROR_CREATING_CATEGORY,
+                ExceptionMessage = ex.Message
             };
         }
     }
