@@ -25,6 +25,8 @@ public class CategoryService : ICategoryService
         {
             var categories = _categoryRepository.GetAsQueryable(null, null, null);
 
+            var totalCount = categories.Count();
+
             if (skip.HasValue)
                 categories = categories.Skip(skip.Value);
 
@@ -44,7 +46,8 @@ public class CategoryService : ICategoryService
             return new ApiResponse<List<CategoryDTO>>() 
             { 
                 Success = true, 
-                Data = categoriesDTO
+                Data = categoriesDTO,
+                TotalCount = totalCount
             };
         }
         catch (Exception ex)
@@ -65,8 +68,8 @@ public class CategoryService : ICategoryService
             if (!String.IsNullOrEmpty(request.Name))
             {
                 string name = request.Name;
-                var categoryExist = _categoryRepository.Exists(x => x.Name.ToLower() == name.ToLower());
-                if (categoryExist)
+                var status = _categoryRepository.Exists(x => x.Name.ToLower() == name.ToLower());
+                if (status)
                     return new SingleResponse<CategoryDTO>() { Success = false, Message = CategoryConstants.CATEGORY_EXISTS };
 
                 var entity = _categoryRepository.Insert(new Category { Name = name });
@@ -75,7 +78,7 @@ public class CategoryService : ICategoryService
                 return new SingleResponse<CategoryDTO>()
                 {
                     Success = true,
-                    Message = CategoryConstants.SUCCESSFULLY_CREATED_CATEGORY,
+                    Message = CategoryConstants.CATEGORY_SUCCESSFULLY_CREATED,
                     Data = new CategoryDTO
                     {
                         Id = entity.Id,
@@ -105,6 +108,53 @@ public class CategoryService : ICategoryService
                 Message = CategoryConstants.ERROR_CREATING_CATEGORY,
                 ExceptionMessage = ex.Message
             };
+        }
+    }
+
+    public SingleResponse<CategoryDTO> DeleteCategory(Guid id)
+    {
+        try
+        {
+            var sads = Guid.Parse(id.ToString());
+            var status = _categoryRepository.Exists(x => x.Id == id);
+            if (status)
+            {
+                var entity = _categoryRepository.Delete(id);
+                _uow.SaveChanges();
+
+                return new SingleResponse<CategoryDTO>()
+                {
+                    Success = true,
+                    Message = CategoryConstants.CATEGORY_SUCCESSFULLY_DELETED,
+                    Data = new CategoryDTO
+                    {
+                        Id = entity.Id,
+                        Name = entity.Name,
+                        Created = entity.Created,
+                        CreatedBy = entity.CreatedBy,
+                        LastModified = entity.LastModified,
+                        LastModifiedBy = entity.LastModifiedBy
+                    }
+                };
+            }
+            else
+            {
+                return new SingleResponse<CategoryDTO>() 
+                { 
+                    Success = false, 
+                    Message = CategoryConstants.CATEGORY_DOESNT_EXIST 
+                };
+            }               
+        }
+        catch (Exception ex)
+        {
+            return new SingleResponse<CategoryDTO>() 
+            { 
+                Success = false,
+                Message = CategoryConstants.ERROR_DELETING_CATEGORY,
+                ExceptionMessage = ex.Message
+            };
+
         }
     }
 }

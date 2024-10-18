@@ -5,7 +5,7 @@ namespace EntityModels.Interfaces;
 
 public interface IGenericRepository<TEntity> where TEntity : class
 {
-    void Delete(object id);
+    TEntity Delete(object id);
     void Delete(TEntity entity);
     void DeleteRange(IEnumerable<TEntity> entities);
     IEnumerable<TEntity> Get(

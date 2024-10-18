@@ -16,10 +16,11 @@ public class SqlGenericRepository<TEntity, TContext> : IGenericRepository<TEntit
         dbSet = context.Set<TEntity>();
     }
 
-    public void Delete(object id)
+    public TEntity Delete(object id)
     {
         TEntity entity = dbSet.Find(id);
         Delete(entity);
+        return entity;
     }
 
     public void Delete(TEntity entity)

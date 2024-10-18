@@ -28,4 +28,11 @@ public class CategoryController : ControllerBase
         var response = _categoryService.CreateCategory(request);
         return Ok(response);
     }
+
+    [HttpDelete("Delete/{id}")]
+    public IActionResult Delete(Guid id)
+    {
+        var response = _categoryService.DeleteCategory(id);
+        return Ok(response);
+    }
 }
