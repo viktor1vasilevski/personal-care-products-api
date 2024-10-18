@@ -23,9 +23,9 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPost("Create")]
-    public IActionResult Insert(string name)
+    public IActionResult Insert([FromBody] CreateCategoryDTO request)
     {
-        var response = _categoryService.CreateCategory(name);
+        var response = _categoryService.CreateCategory(request);
         return Ok(response);
     }
 }

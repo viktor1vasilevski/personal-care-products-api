@@ -9,5 +9,5 @@ namespace Main.Interfaces;
 public interface ICategoryService
 {
     ApiResponse<List<CategoryDTO>> GetCategories(int? skip, int? take);
-    SingleResponse<CategoryDTO> CreateCategory(string name);
+    SingleResponse<CategoryDTO> CreateCategory(CreateCategoryDTO request);
 }

@@ -58,12 +58,13 @@ public class CategoryService : ICategoryService
         }
     }
 
-    public SingleResponse<CategoryDTO> CreateCategory(string name)
+    public SingleResponse<CategoryDTO> CreateCategory(CreateCategoryDTO request)
     {
         try
         {
-            if (!String.IsNullOrEmpty(name))
+            if (!String.IsNullOrEmpty(request.Name))
             {
+                string name = request.Name;
                 var categoryExist = _categoryRepository.Exists(x => x.Name.ToLower() == name.ToLower());
                 if (categoryExist)
                     return new SingleResponse<CategoryDTO>() { Success = false, Message = CategoryConstants.CATEGORY_EXISTS };
