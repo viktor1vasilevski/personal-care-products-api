@@ -6,6 +6,7 @@ using Main.DTOs.Category;
 using Main.DTOs.Responses;
 using Main.Interfaces;
 using Main.Responses;
+using Microsoft.EntityFrameworkCore;
 
 namespace Main.Services;
 
@@ -115,10 +116,20 @@ public class CategoryService : ICategoryService
     {
         try
         {
-            var sads = Guid.Parse(id.ToString());
             var status = _categoryRepository.Exists(x => x.Id == id);
             if (status)
             {
+                var category = _categoryRepository.GetAsQueryable(x => x.Id == id).Include(x => x.Subcategory).FirstOrDefault();
+
+                if (category.Subcategory.Any())
+                {
+                    return new SingleResponse<CategoryDTO>()
+                    {
+                        Success = false,
+                        Message = CategoryConstants.CATEGORY_HAS_LINKED_SUBCATEGORIES,
+                    };
+                }
+
                 var entity = _categoryRepository.Delete(id);
                 _uow.SaveChanges();
 

@@ -15,6 +15,7 @@ public static class CategoryConstants
 
 
     public const string CATEGORY_NAME_IS_EMPTY = "Category name is empty string.";
+    public const string CATEGORY_HAS_LINKED_SUBCATEGORIES = "This category cannot be deleted because it has linked subcategories.";
 
 
 }
