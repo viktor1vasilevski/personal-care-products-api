@@ -4,6 +4,7 @@ using EntityModels.Models;
 using Main.Constants;
 using Main.DTOs.Category;
 using Main.DTOs.Responses;
+using Main.Enums;
 using Main.Interfaces;
 using Main.Responses;
 using Microsoft.EntityFrameworkCore;
@@ -71,7 +72,12 @@ public class CategoryService : ICategoryService
                 string name = request.Name;
                 var status = _categoryRepository.Exists(x => x.Name.ToLower() == name.ToLower());
                 if (status)
-                    return new SingleResponse<CategoryDTO>() { Success = false, Message = CategoryConstants.CATEGORY_EXISTS };
+                    return new SingleResponse<CategoryDTO>() 
+                    { 
+                        Success = false, 
+                        Message = CategoryConstants.CATEGORY_EXISTS,
+                        NotificationType = NotificationType.Info
+                    };
 
                 var entity = _categoryRepository.Insert(new Category { Name = name });
                 _uow.SaveChanges();
@@ -89,6 +95,7 @@ public class CategoryService : ICategoryService
                         LastModified = entity.LastModified,
                         LastModifiedBy = entity.LastModifiedBy
                     },
+                    NotificationType = NotificationType.Success
                 };
             }
             else
@@ -96,7 +103,8 @@ public class CategoryService : ICategoryService
                 return new SingleResponse<CategoryDTO>() 
                 { 
                     Success = false, 
-                    Message = CategoryConstants.CATEGORY_NAME_IS_EMPTY 
+                    Message = CategoryConstants.CATEGORY_NAME_IS_EMPTY,
+                    NotificationType = NotificationType.Info
                 };
             }
             
@@ -107,7 +115,8 @@ public class CategoryService : ICategoryService
             { 
                 Success = false,
                 Message = CategoryConstants.ERROR_CREATING_CATEGORY,
-                ExceptionMessage = ex.Message
+                ExceptionMessage = ex.Message,
+                NotificationType = NotificationType.Error
             };
         }
     }
@@ -127,6 +136,7 @@ public class CategoryService : ICategoryService
                     {
                         Success = false,
                         Message = CategoryConstants.CATEGORY_HAS_LINKED_SUBCATEGORIES,
+                        NotificationType = NotificationType.Info
                     };
                 }
 
@@ -137,6 +147,7 @@ public class CategoryService : ICategoryService
                 {
                     Success = true,
                     Message = CategoryConstants.CATEGORY_SUCCESSFULLY_DELETED,
+                    NotificationType = NotificationType.Success,
                     Data = new CategoryDTO
                     {
                         Id = entity.Id,
@@ -153,7 +164,8 @@ public class CategoryService : ICategoryService
                 return new SingleResponse<CategoryDTO>() 
                 { 
                     Success = false, 
-                    Message = CategoryConstants.CATEGORY_DOESNT_EXIST 
+                    Message = CategoryConstants.CATEGORY_DOESNT_EXIST,
+                    NotificationType = NotificationType.Info
                 };
             }               
         }
@@ -163,7 +175,8 @@ public class CategoryService : ICategoryService
             { 
                 Success = false,
                 Message = CategoryConstants.ERROR_DELETING_CATEGORY,
-                ExceptionMessage = ex.Message
+                ExceptionMessage = ex.Message,
+                NotificationType = NotificationType.Error
             };
 
         }
