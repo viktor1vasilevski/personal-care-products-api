@@ -178,7 +178,54 @@ public class CategoryService : ICategoryService
                 ExceptionMessage = ex.Message,
                 NotificationType = NotificationType.Error
             };
+        }
+    }
 
+    public SingleResponse<CategoryDTO> GetByIdCategory(Guid id)
+    {
+        try
+        {
+            var status = _categoryRepository.Exists(x => x.Id == id);
+            if (status)
+            {
+                var category = _categoryRepository.GetAsQueryable(x => x.Id == id).Include(x => x.Subcategory).FirstOrDefault();
+
+                return new SingleResponse<CategoryDTO>()
+                {
+                    Success = true,
+                    Message = CategoryConstants.CATEGORY_SUCCESSFULLY_DELETED,
+                    NotificationType = NotificationType.Success,
+                    Data = new CategoryDTO
+                    {
+                        Id = category.Id,
+                        Name = category.Name,
+                        Created = category.Created,
+                        CreatedBy = category.CreatedBy,
+                        LastModified = category.LastModified,
+                        LastModifiedBy = category.LastModifiedBy,
+                        Subcategories = category.Subcategory?.Select(sc => sc.Name).ToList() ?? new List<string>()
+                    }
+                };
+            }
+            else
+            {
+                return new SingleResponse<CategoryDTO>()
+                {
+                    Success = false,
+                    Message = CategoryConstants.CATEGORY_DOESNT_EXIST,
+                    NotificationType = NotificationType.Info
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            return new SingleResponse<CategoryDTO>()
+            {
+                Success = false,
+                Message = CategoryConstants.ERROR_GET_CATEGORY_BY_ID,
+                ExceptionMessage = ex.Message,
+                NotificationType = NotificationType.Error
+            };
         }
     }
 }

@@ -11,4 +11,5 @@ public interface ICategoryService
     ApiResponse<List<CategoryDTO>> GetCategories(int? skip, int? take);
     SingleResponse<CategoryDTO> CreateCategory(CreateCategoryDTO request);
     SingleResponse<CategoryDTO> DeleteCategory(Guid id);
+    SingleResponse<CategoryDTO> GetByIdCategory(Guid id);
 }

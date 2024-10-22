@@ -22,6 +22,13 @@ public class CategoryController : ControllerBase
         return Ok(response);
     }
 
+    [HttpGet("GetById/{id}")]
+    public IActionResult GetById(Guid id)
+    {
+        var response = _categoryService.GetByIdCategory(id);
+        return Ok(response);
+    }
+
     [HttpPost("Create")]
     public IActionResult Insert([FromBody] CreateCategoryDTO request)
     {

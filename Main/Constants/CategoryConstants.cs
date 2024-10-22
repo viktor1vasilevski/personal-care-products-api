@@ -9,6 +9,8 @@ public static class CategoryConstants
     public const string ERROR_CREATING_CATEGORY = "An error occurred while creating the category.";
     public const string ERROR_DELETING_CATEGORY = "An error occurred while deleting category.";
 
+    public const string ERROR_GET_CATEGORY_BY_ID = "An error occurred while getting category.";
+
 
     public const string CATEGORY_EXISTS = "Category with that name already exists.";
     public const string CATEGORY_DOESNT_EXIST = "Category doesn't exist.";
