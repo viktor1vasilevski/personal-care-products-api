@@ -2,9 +2,12 @@
 using EntityModels.Interfaces;
 using EntityModels.Models;
 using Main.Constants;
+using Main.DTOs.Category;
 using Main.DTOs.Responses;
 using Main.DTOs.Subcategory;
+using Main.Enums;
 using Main.Interfaces;
+using Main.Responses;
 
 namespace Main.Services;
 
@@ -17,6 +20,7 @@ public class SubcategoryService : ISubcategoryService
         _uow = uow;
         _subCategoryRepository = _uow.GetGenericRepository<Subcategory>();
     }
+
 
     public ApiResponse<List<SubcategoryDTO>> GetSubcategories(int? skip, int? take)
     {
@@ -53,6 +57,54 @@ public class SubcategoryService : ISubcategoryService
                 Success = false, 
                 Message = SubcategoryConstants.ERROR_RETRIEVING_SUBCATEGORIES, 
                 ExceptionMessage = ex.Message 
+            };
+        }
+    }
+
+    public SingleResponse<SubcategoryDTO> GetByIdSubcategory(Guid id)
+    {
+        try
+        {
+            var status = _subCategoryRepository.Exists(x => x.Id == id);
+            if (status)
+            {
+                var subcategory = _subCategoryRepository.GetAsQueryable(x => x.Id == id).FirstOrDefault();
+
+                return new SingleResponse<SubcategoryDTO>()
+                {
+                    Success = true,
+                    Message = SubcategoryConstants.SUBCATEGORY_SUCCESSFULLY_RETRIVED,
+                    NotificationType = NotificationType.Success,
+                    Data = new SubcategoryDTO
+                    {
+                        Id = subcategory.Id,
+                        Name = subcategory.Name,
+                        Created = subcategory.Created,
+                        CreatedBy = subcategory.CreatedBy,
+                        LastModified = subcategory.LastModified,
+                        LastModifiedBy = subcategory.LastModifiedBy,
+                        //Subcategories = category.Subcategory?.Select(sc => sc.Name).ToList() ?? new List<string>()
+                    }
+                };
+            }
+            else
+            {
+                return new SingleResponse<SubcategoryDTO>()
+                {
+                    Success = false,
+                    Message = SubcategoryConstants.SUBCATEGORY_DOESNT_EXIST,
+                    NotificationType = NotificationType.Info
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            return new SingleResponse<SubcategoryDTO>()
+            {
+                Success = false,
+                Message = SubcategoryConstants.ERROR_GET_SUBCATEGORY_BY_ID,
+                ExceptionMessage = ex.Message,
+                NotificationType = NotificationType.Error
             };
         }
     }
