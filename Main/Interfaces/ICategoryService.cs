@@ -9,7 +9,8 @@ namespace Main.Interfaces;
 public interface ICategoryService
 {
     ApiResponse<List<CategoryDTO>> GetCategories(int? skip, int? take);
-    SingleResponse<CategoryDTO> CreateCategory(CreateCategoryDTO request);
+    SingleResponse<CategoryDTO> CreateCategory(CreateUpdateCategoryDTO request);
+    SingleResponse<CategoryDTO> UpdateCategory(Guid id, CreateUpdateCategoryDTO request);
     SingleResponse<CategoryDTO> DeleteCategory(Guid id);
-    SingleResponse<CategoryDTO> GetByIdCategory(Guid id);
+    SingleResponse<CategoryDTO> GetCategoryById(Guid id);
 }

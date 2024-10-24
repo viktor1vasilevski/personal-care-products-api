@@ -19,7 +19,7 @@ public interface IGenericRepository<TEntity> where TEntity : class
     TEntity GetByID(object id);
     TEntity Insert(TEntity entity);
     void InsertRange(IEnumerable<TEntity> entities);
-    void Update(TEntity entity);
+    TEntity Update(TEntity entity);
     void UpdateWithRelatedEntities(TEntity entity);
     object SetObjectStateToDetached(Object obj);
     object SetObjectStateToAdded(object obj);

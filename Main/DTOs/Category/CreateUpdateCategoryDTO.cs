@@ -1,6 +1,6 @@
 ﻿namespace Main.DTOs.Category;
 
-public class CreateCategoryDTO
+public class CreateUpdateCategoryDTO
 {
     public string Name { get; set; }
 }

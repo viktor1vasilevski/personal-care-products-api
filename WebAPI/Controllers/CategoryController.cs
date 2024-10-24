@@ -25,14 +25,21 @@ public class CategoryController : ControllerBase
     [HttpGet("GetById/{id}")]
     public IActionResult GetById(Guid id)
     {
-        var response = _categoryService.GetByIdCategory(id);
+        var response = _categoryService.GetCategoryById(id);
         return Ok(response);
     }
 
     [HttpPost("Create")]
-    public IActionResult Insert([FromBody] CreateCategoryDTO request)
+    public IActionResult Insert([FromBody] CreateUpdateCategoryDTO request)
     {
         var response = _categoryService.CreateCategory(request);
+        return Ok(response);
+    }
+
+    [HttpPut("Update/{id}")]
+    public IActionResult Update(Guid id, [FromBody] CreateUpdateCategoryDTO request)
+    {
+        var response = _categoryService.UpdateCategory(id, request);
         return Ok(response);
     }
 

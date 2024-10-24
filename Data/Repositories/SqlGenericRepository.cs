@@ -125,11 +125,12 @@ public class SqlGenericRepository<TEntity, TContext> : IGenericRepository<TEntit
         return obj;
     }
 
-    public void Update(TEntity entity)
+    public TEntity Update(TEntity entity)
     {
         var entry = context.Entry(entity);
         context.Entry(entity).State = EntityState.Detached;
         context.Entry(entity).State = EntityState.Modified;
+        return entity;
     }
 
     public void UpdateWithRelatedEntities(TEntity entity)
