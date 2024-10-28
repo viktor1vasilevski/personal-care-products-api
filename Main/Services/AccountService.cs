@@ -29,7 +29,7 @@ public class AccountService : IAccountService
         _configuration = configuration;
     }
 
-    public async Task<ApiResponse<LoginUserResponse>> Login(LoginUserRequest model)
+    public async Task<QueryResponse<LoginUserResponse>> Login(LoginUserRequest model)
     {
         try
         {
@@ -63,7 +63,7 @@ public class AccountService : IAccountService
                     Role = roles[0]
                 };
 
-                return new ApiResponse<LoginUserResponse>
+                return new QueryResponse<LoginUserResponse>
                 {
                     Data = loginUserModel,
                     Message = AccountConstants.SUCCESSFULLY_LOGGED_IN,
@@ -73,7 +73,7 @@ public class AccountService : IAccountService
         }
         catch (Exception ex)
         {
-            return new ApiResponse<LoginUserResponse>
+            return new QueryResponse<LoginUserResponse>
             {
                 Success = false,
                 Message = AccountConstants.ERROR_LOGGING_IN,
@@ -82,19 +82,19 @@ public class AccountService : IAccountService
         }
 
 
-        return new ApiResponse<LoginUserResponse>
+        return new QueryResponse<LoginUserResponse>
         {
             Success = false,
             Message = AccountConstants.INVALID_USER_OR_PASS
         };
     }
 
-    public async Task<ApiResponse<LogoutResponse>> Logout()
+    public async Task<QueryResponse<LogoutResponse>> Logout()
     {
         try
         {
             await _signInManager.SignOutAsync();
-            return new ApiResponse<LogoutResponse> 
+            return new QueryResponse<LogoutResponse> 
             { 
                 Success = true, 
                 Data = new LogoutResponse { IsLoggedOut = true }, 
@@ -103,7 +103,7 @@ public class AccountService : IAccountService
         }
         catch (Exception ex)
         {
-            return new ApiResponse<LogoutResponse> 
+            return new QueryResponse<LogoutResponse> 
             { 
                 Success = false, 
                 Message = AccountConstants.ERROR_LOGGING_OUT, 
@@ -112,11 +112,11 @@ public class AccountService : IAccountService
         }
     }
 
-    public async Task<ApiResponse<IdentityUser>> Register(RegisterUserRequest model)
+    public async Task<QueryResponse<IdentityUser>> Register(RegisterUserRequest model)
     {
         try
         {
-            var response= new ApiResponse<IdentityUser>();
+            var response= new QueryResponse<IdentityUser>();
 
             IdentityUser user = new IdentityUser()
             {
@@ -157,11 +157,11 @@ public class AccountService : IAccountService
                 response.Errors[error.Code] = response.Errors[error.Code].Append(error.Description).ToArray();
                 response.Errors.Add(error.Code, new[] { error.Description });
             }
-            return new ApiResponse<IdentityUser> { Success = false, Message = AccountConstants.REGISTRATION_ERROR, Errors = response.Errors };
+            return new QueryResponse<IdentityUser> { Success = false, Message = AccountConstants.REGISTRATION_ERROR, Errors = response.Errors };
         }
         catch (Exception ex)
         {
-            return new ApiResponse<IdentityUser> { Success = false, Message = AccountConstants.REGISTRATION_ERROR, ExceptionMessage = ex.Message };
+            return new QueryResponse<IdentityUser> { Success = false, Message = AccountConstants.REGISTRATION_ERROR, ExceptionMessage = ex.Message };
         }
     }
 

@@ -22,7 +22,7 @@ public class SubcategoryService : ISubcategoryService
     }
 
 
-    public ApiResponse<List<SubcategoryDTO>> GetSubcategories(int? skip, int? take)
+    public QueryResponse<List<SubcategoryDTO>> GetSubcategories(int? skip, int? take)
     {
         try
         {
@@ -44,7 +44,7 @@ public class SubcategoryService : ISubcategoryService
                 LastModifiedBy = x.LastModifiedBy
             }).ToList();
 
-            return new ApiResponse<List<SubcategoryDTO>>() 
+            return new QueryResponse<List<SubcategoryDTO>>() 
             { 
                 Success = true,
                 Data = subcategoriesDTO
@@ -52,7 +52,7 @@ public class SubcategoryService : ISubcategoryService
         }
         catch (Exception ex)
         {
-            return new ApiResponse<List<SubcategoryDTO>>() 
+            return new QueryResponse<List<SubcategoryDTO>>() 
             { 
                 Success = false, 
                 Message = SubcategoryConstants.ERROR_RETRIEVING_SUBCATEGORIES, 
@@ -68,7 +68,7 @@ public class SubcategoryService : ISubcategoryService
             var status = _subCategoryRepository.Exists(x => x.Id == id);
             if (status)
             {
-                var subcategory = _subCategoryRepository.GetAsQueryable(x => x.Id == id).FirstOrDefault();
+                var subcategory = _subCategoryRepository.Get(x => x.Id == id).FirstOrDefault();
 
                 return new SingleResponse<SubcategoryDTO>()
                 {

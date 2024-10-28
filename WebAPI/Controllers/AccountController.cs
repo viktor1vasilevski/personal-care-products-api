@@ -1,6 +1,7 @@
 ﻿using Main.DTOs.Account;
 using Main.DTOs.Responses;
 using Main.Interfaces;
+using Main.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -39,7 +40,7 @@ public class AccountController : ControllerBase
     [HttpPost("RegisterUser")]
     //[SwaggerResponse(HttpStatusCode.BadRequest, null, Description = "Registration Form Input Is Not Correct")]
     //[SwaggerResponse(HttpStatusCode.OK, typeof(RegisterViewModel), Description = "Valid Registration")]
-    public async Task<ApiResponse<IdentityUser>> Register(RegisterViewModel model)
+    public async Task<QueryResponse<IdentityUser>> Register(RegisterViewModel model)
     {
         try
         {
@@ -62,7 +63,7 @@ public class AccountController : ControllerBase
                 var roleResult = await _userManager.AddToRoleAsync(user, "User");
                 if (roleResult.Succeeded)
                 {
-                    return new ApiResponse<IdentityUser> { Data = user, Success = true, Message = "User registered" };
+                    return new QueryResponse<IdentityUser> { Data = user, Success = true, Message = "User registered" };
                 }
 
                 foreach (var error in roleResult.Errors)
@@ -75,11 +76,11 @@ public class AccountController : ControllerBase
             {
                 ModelState.AddModelError(error.Code, error.Description);
             }
-            return new ApiResponse<IdentityUser> { Success = false, Message = "Error registering" };
+            return new QueryResponse<IdentityUser> { Success = false, Message = "Error registering" };
         }
         catch (Exception ex)
         {
-            return new ApiResponse<IdentityUser> { Success = false, Message = "Error registering", ExceptionMessage = ex.Message };
+            return new QueryResponse<IdentityUser> { Success = false, Message = "Error registering", ExceptionMessage = ex.Message };
         }
         
     }

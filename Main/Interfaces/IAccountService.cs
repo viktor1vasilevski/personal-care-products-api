@@ -7,7 +7,7 @@ namespace Main.Interfaces;
 
 public interface IAccountService
 {
-    Task<ApiResponse<LogoutResponse>> Logout();
-    Task<ApiResponse<LoginUserResponse>> Login(LoginUserRequest model);
-    Task<ApiResponse<IdentityUser>> Register(RegisterUserRequest model);
+    Task<QueryResponse<LogoutResponse>> Logout();
+    Task<QueryResponse<LoginUserResponse>> Login(LoginUserRequest model);
+    Task<QueryResponse<IdentityUser>> Register(RegisterUserRequest model);
 }

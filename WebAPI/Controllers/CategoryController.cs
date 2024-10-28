@@ -16,9 +16,9 @@ public class CategoryController : ControllerBase
 
 
     [HttpGet("Get")]
-    public IActionResult Get(int? skip, int? take)
+    public IActionResult Get(int? skip, int? take, string? sort, string? name)
     {
-        var response = _categoryService.GetCategories(skip, take);
+        var response = _categoryService.GetCategories(skip, take, sort, name);
         return Ok(response);
     }
 

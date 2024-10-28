@@ -4,6 +4,7 @@ using Data.Repositories;
 using EntityModels.Interfaces;
 using Main.DTOs.Responses;
 using Main.Interfaces;
+using Main.Responses;
 using Main.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +18,7 @@ builder.Services.AddControllers()
     {
         options.InvalidModelStateResponseFactory = context =>
         {
-            var response = new ApiResponse<object>
+            var response = new QueryResponse<object>
             {
                 Success = false,
                 Message = "One or more validation errors occurred.",

@@ -3,8 +3,8 @@ using EntityModels.Interfaces;
 using EntityModels.Models;
 using Main.Constants;
 using Main.DTOs.Category;
-using Main.DTOs.Responses;
 using Main.Enums;
+using Main.Extensions;
 using Main.Interfaces;
 using Main.Responses;
 using Microsoft.EntityFrameworkCore;
@@ -21,11 +21,33 @@ public class CategoryService : ICategoryService
         _categoryRepository = _uow.GetGenericRepository<Category>();
     }
 
-    public ApiResponse<List<CategoryDTO>> GetCategories(int? skip, int? take)
+    public QueryResponse<List<CategoryDTO>> GetCategories(int? skip, int? take, string? sort, string? name)
     {
         try
         {
-            var categories = _categoryRepository.GetAsQueryable(null, null, null);
+            var categories = _categoryRepository.GetAsMyQueryable(c => c
+                .WhereIf(!String.IsNullOrEmpty(name), x => x.Name.ToLower().Contains(name.ToLower())), 
+                null, 
+                null
+                );          
+
+            if (!String.IsNullOrEmpty(sort))
+            {
+                switch (sort.ToLower())
+                {
+                    case "asc":
+                        categories = categories.OrderBy(x => x.Created);
+                        break;
+                    case "desc":
+                        categories = categories.OrderByDescending(x => x.Created);
+                        break;
+
+
+                    default:
+                        categories = categories.OrderByDescending(x => x.Created);
+                        break;
+                }
+            }
 
             var totalCount = categories.Count();
 
@@ -45,20 +67,22 @@ public class CategoryService : ICategoryService
                 LastModifiedBy = x.LastModifiedBy
             }).ToList();
 
-            return new ApiResponse<List<CategoryDTO>>() 
+            return new QueryResponse<List<CategoryDTO>>() 
             { 
                 Success = true, 
                 Data = categoriesDTO,
-                TotalCount = totalCount
+                TotalCount = totalCount,
+                NotificationType = NotificationType.Success,
             };
         }
         catch (Exception ex)
         {
-            return new ApiResponse<List<CategoryDTO>>() 
+            return new QueryResponse<List<CategoryDTO>>() 
             { 
                 Success = false, 
                 Message = CategoryConstants.ERROR_RETRIEVING_CATEGORIES, 
-                ExceptionMessage = ex.Message 
+                ExceptionMessage = ex.Message,
+                NotificationType = NotificationType.Error
             };
         }
     }

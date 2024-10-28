@@ -9,6 +9,6 @@ namespace Main.Interfaces;
 
 public interface ISubcategoryService
 {
-    ApiResponse<List<SubcategoryDTO>> GetSubcategories(int? skip, int? take);
+    QueryResponse<List<SubcategoryDTO>> GetSubcategories(int? skip, int? take);
     SingleResponse<SubcategoryDTO> GetByIdSubcategory(Guid id);
 }

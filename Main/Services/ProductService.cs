@@ -6,6 +6,7 @@ using Main.DTOs.Product;
 using Main.DTOs.Responses;
 using Main.Extensions;
 using Main.Interfaces;
+using Main.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Main.Services;
@@ -23,7 +24,7 @@ public class ProductService : IProductService
         _subcategoryRepository = _uow.GetGenericRepository<Subcategory>();
     }
 
-    public ApiResponse<List<ProductDTO>> GetProducts(string? category, string? subCategory, int? skip, int? take)
+    public QueryResponse<List<ProductDTO>> GetProducts(string? category, string? subCategory, int? skip, int? take)
     {
         try
         {
@@ -61,7 +62,7 @@ public class ProductService : IProductService
                 LastModifiedBy = x.LastModifiedBy
             }).ToList();
 
-            return new ApiResponse<List<ProductDTO>>() 
+            return new QueryResponse<List<ProductDTO>>() 
             { 
                 Success = true, 
                 Data = productsDTO, 
@@ -70,7 +71,7 @@ public class ProductService : IProductService
         }
         catch (Exception ex)
         {
-            return new ApiResponse<List<ProductDTO>>() 
+            return new QueryResponse<List<ProductDTO>>() 
             { 
                 Success = false, 
                 Message = ProductConstants.ERROR_RETRIEVING_PRODUCTS, 
@@ -80,13 +81,13 @@ public class ProductService : IProductService
         
     }
 
-    public ApiResponse<ProductCreateDTO> CreateProduct(ProductCreateDTO model)
+    public QueryResponse<ProductCreateDTO> CreateProduct(ProductCreateDTO model)
     {
         try
         {
             var subcategory = _subcategoryRepository.GetByID(model.SubcategoryId);
             if (subcategory is null)
-                return new ApiResponse<ProductCreateDTO> { Success = false, Message = SubcategoryConstants.SUBCATEGORY_NOT_EXIST };
+                return new QueryResponse<ProductCreateDTO> { Success = false, Message = SubcategoryConstants.SUBCATEGORY_NOT_EXIST };
 
             var entity = new Product
             {
@@ -106,7 +107,7 @@ public class ProductService : IProductService
             _productRepository.Insert(entity);
             _uow.SaveChanges();
 
-            return new ApiResponse<ProductCreateDTO>
+            return new QueryResponse<ProductCreateDTO>
             {
                 Success = true,
                 Data = model,
@@ -115,7 +116,7 @@ public class ProductService : IProductService
         }
         catch (Exception ex)
         {
-            return new ApiResponse<ProductCreateDTO>()
+            return new QueryResponse<ProductCreateDTO>()
             {
                 Success = false,
                 Message = ProductConstants.ERROR_CREATING_PRODUCT,
