@@ -16,6 +16,12 @@ public interface IGenericRepository<TEntity> where TEntity : class
         Expression<Func<TEntity, bool>> filter = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null);
+
+    IQueryable<TEntity> GetAsMyQueryable(
+        Func<IQueryable<TEntity>, IQueryable<TEntity>> filter = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null);
+
     TEntity GetByID(object id);
     TEntity Insert(TEntity entity);
     void InsertRange(IEnumerable<TEntity> entities);

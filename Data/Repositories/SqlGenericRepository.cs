@@ -78,6 +78,31 @@ public class SqlGenericRepository<TEntity, TContext> : IGenericRepository<TEntit
         return query.ToList();
     }
 
+    public IQueryable<TEntity> GetAsMyQueryable(
+        Func<IQueryable<TEntity>, IQueryable<TEntity>> filter = null, 
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, 
+        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null)
+    {
+        IQueryable<TEntity> query = dbSet;
+
+        if (filter != null)
+        {
+            query = filter(query);
+        }
+
+        if (orderBy != null)
+        {
+            query = orderBy(query);
+        }
+
+        if (include != null)
+        {
+            query = include(query);
+        }
+
+        return query;
+    }
+
     public IQueryable<TEntity> GetAsQueryable(Expression<Func<TEntity, bool>> filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null)
     {
         IQueryable<TEntity> query = dbSet;
