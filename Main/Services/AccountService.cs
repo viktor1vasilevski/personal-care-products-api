@@ -1,6 +1,5 @@
 ﻿using Main.Constants;
 using Main.DTOs.Account;
-using Main.DTOs.Responses;
 using Main.Interfaces;
 using Main.Responses;
 using Microsoft.AspNetCore.Identity;

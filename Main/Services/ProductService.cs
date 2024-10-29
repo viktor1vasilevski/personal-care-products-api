@@ -3,7 +3,6 @@ using EntityModels.Interfaces;
 using EntityModels.Models;
 using Main.Constants;
 using Main.DTOs.Product;
-using Main.DTOs.Responses;
 using Main.Extensions;
 using Main.Interfaces;
 using Main.Responses;

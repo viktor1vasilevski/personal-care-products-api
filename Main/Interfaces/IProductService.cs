@@ -1,6 +1,4 @@
-﻿using Main.DTOs;
-using Main.DTOs.Product;
-using Main.DTOs.Responses;
+﻿using Main.DTOs.Product;
 using Main.Responses;
 
 namespace Main.Interfaces;

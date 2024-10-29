@@ -2,8 +2,6 @@
 using EntityModels.Interfaces;
 using EntityModels.Models;
 using Main.Constants;
-using Main.DTOs.Category;
-using Main.DTOs.Responses;
 using Main.DTOs.Subcategory;
 using Main.Enums;
 using Main.Interfaces;

@@ -1,9 +1,5 @@
-﻿using EntityModels.Models;
-using Main.DTOs.Category;
-using Main.DTOs.Product;
-using Main.DTOs.Responses;
+﻿using Main.DTOs.Category;
 using Main.Responses;
-using System.Web;
 
 namespace Main.Interfaces;
 
