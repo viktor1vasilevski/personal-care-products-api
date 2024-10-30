@@ -86,7 +86,7 @@ public class ProductService : IProductService
         {
             var subcategory = _subcategoryRepository.GetByID(model.SubcategoryId);
             if (subcategory is null)
-                return new QueryResponse<ProductCreateDTO> { Success = false, Message = SubcategoryConstants.SUBCATEGORY_NOT_EXIST };
+                return new QueryResponse<ProductCreateDTO> { Success = false, Message = SubcategoryConstants.SUBCATEGORY_DOESNT_EXIST };
 
             var entity = new Product
             {

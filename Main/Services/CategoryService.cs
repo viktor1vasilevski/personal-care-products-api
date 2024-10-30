@@ -25,7 +25,7 @@ public class CategoryService : ICategoryService
     {
         try
         {
-            var categories = _categoryRepository.GetAsMyQueryable(c => c
+            var categories = _categoryRepository.GetAsQueryableWhereIf(c => c
                 .WhereIf(!String.IsNullOrEmpty(name), x => x.Name.ToLower().Contains(name.ToLower())), 
                 null, 
                 null

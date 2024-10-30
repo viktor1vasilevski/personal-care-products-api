@@ -1,4 +1,5 @@
-﻿using Main.DTOs.Subcategory;
+﻿using Main.DTOs.Category;
+using Main.DTOs.Subcategory;
 using Main.Responses;
 
 namespace Main.Interfaces;
@@ -6,5 +7,6 @@ namespace Main.Interfaces;
 public interface ISubcategoryService
 {
     QueryResponse<List<SubcategoryDTO>> GetSubcategories(int? skip, int? take);
-    SingleResponse<SubcategoryDTO> GetByIdSubcategory(Guid id);
+    SingleResponse<SubcategoryDTO> GetSubcategoryById(Guid id);
+    SingleResponse<SubcategoryDTO> DeleteSubcategory(Guid id);
 }

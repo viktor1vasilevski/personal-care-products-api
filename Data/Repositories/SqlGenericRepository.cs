@@ -78,7 +78,7 @@ public class SqlGenericRepository<TEntity, TContext> : IGenericRepository<TEntit
         return query.ToList();
     }
 
-    public IQueryable<TEntity> GetAsMyQueryable(
+    public IQueryable<TEntity> GetAsQueryableWhereIf(
         Func<IQueryable<TEntity>, IQueryable<TEntity>> filter = null, 
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, 
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> include = null)

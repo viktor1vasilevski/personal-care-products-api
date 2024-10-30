@@ -25,7 +25,14 @@ public class SubcategoryController : ControllerBase
     [HttpGet("GetById/{id}")]
     public IActionResult GetById(Guid id)
     {
-        var response = _subcategoryService.GetByIdSubcategory(id);
+        var response = _subcategoryService.GetSubcategoryById(id);
+        return Ok(response);
+    }
+
+    [HttpDelete("Delete/{id}")]
+    public IActionResult Delete(Guid id)
+    {
+        var response = _subcategoryService.DeleteSubcategory(id);
         return Ok(response);
     }
 }
