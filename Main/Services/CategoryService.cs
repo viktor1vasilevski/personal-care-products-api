@@ -244,7 +244,7 @@ public class CategoryService : ICategoryService
             return new SingleResponse<CategoryDTO>()
             {
                 Success = false,
-                Message = CategoryConstants.ERROR_GET_CATEGORY_BY_ID,
+                Message = CategoryConstants.CATEGORY_GET_BY_ID_ERROR,
                 ExceptionMessage = ex.Message,
                 NotificationType = NotificationType.Error
             };

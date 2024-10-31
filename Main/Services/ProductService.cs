@@ -3,6 +3,7 @@ using EntityModels.Interfaces;
 using EntityModels.Models;
 using Main.Constants;
 using Main.DTOs.Product;
+using Main.Enums;
 using Main.Extensions;
 using Main.Interfaces;
 using Main.Requests;
@@ -110,7 +111,7 @@ public class ProductService : IProductService
             {
                 Success = true,
                 Data = model,
-                Message = ProductConstants.SUCCESSFULLY_CREATED_PRODUCT
+                Message = ProductConstants.PRODUCT_SUCCESSFULLY_CREATED
             };
         }
         catch (Exception ex)
@@ -118,8 +119,55 @@ public class ProductService : IProductService
             return new QueryResponse<ProductCreateDTO>()
             {
                 Success = false,
-                Message = ProductConstants.ERROR_CREATING_PRODUCT,
+                Message = ProductConstants.PRODUCT_ERROR_CREATING,
                 ExceptionMessage = ex.Message
+            };
+        }
+    }
+
+    public SingleResponse<ProductDTO> GetProductById(Guid id)
+    {
+        try
+        {
+            if (_productRepository.Exists(x => x.Id == id))
+            {
+                var product = _productRepository.GetAsQueryable(x => x.Id == id).Include(x => x.Subcategory).FirstOrDefault();
+
+                return new SingleResponse<ProductDTO>()
+                {
+                    Success = true,
+                    Message = ProductConstants.PRODUCT_SUCCESSFULLY_RETRIVED,
+                    NotificationType = NotificationType.Success,
+                    Data = new ProductDTO
+                    {
+                        Id = product.Id,
+                        Name = product.Name,
+                        Created = product.Created,
+                        CreatedBy = product.CreatedBy,
+                        LastModified = product.LastModified,
+                        LastModifiedBy = product.LastModifiedBy,
+                        //Subcategories = category.Subcategory?.Select(sc => sc.Name).ToList() ?? new List<string>()
+                    }
+                };
+            }
+            else
+            {
+                return new SingleResponse<ProductDTO>()
+                {
+                    Success = false,
+                    Message = ProductConstants.PRODUCT_GET_BY_ID_INFO,
+                    NotificationType = NotificationType.Info
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            return new SingleResponse<ProductDTO>()
+            {
+                Success = false,
+                Message = ProductConstants.PRODUCT_GET_BY_ID_ERROR,
+                ExceptionMessage = ex.Message,
+                NotificationType = NotificationType.Error
             };
         }
     }

@@ -9,7 +9,7 @@ public static class SubcategoryConstants
     public const string ERROR_GET_SUBCATEGORY_BY_ID = "An error occurred while getting subcategory.";
     public const string SUBCATEGORY_DOESNT_EXIST = "Subcategory doesn't exist.";
 
-    public const string SUBCATEGORY_SUCCESSFULLY_RETRIVED = "Category successfully retrived.";
+    public const string SUBCATEGORY_SUCCESSFULLY_RETRIVED = "Subcategory successfully retrived.";
 
     public const string SUBCATEGORY_SUCCESSFULLY_DELETED = "Subcategory successfully deleted.";
 

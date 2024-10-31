@@ -7,7 +7,7 @@ public static class CategoryConstants
 
     public const string CATEGORY_SUCCESSFULLY_DELETED = "Category successfully deleted.";
 
-    public const string CATEGORY_SUCCESSFULLY_RETRIVED = "Subcategory successfully retrived.";
+    public const string CATEGORY_SUCCESSFULLY_RETRIVED = "Category successfully retrived.";
 
 
     public const string ERROR_RETRIEVING_CATEGORIES = "An error occurred while retrieving the categories.";
@@ -15,7 +15,7 @@ public static class CategoryConstants
     public const string ERROR_CREATING_CATEGORY = "An error occurred while creating the category.";
     public const string ERROR_DELETING_CATEGORY = "An error occurred while deleting category.";
 
-    public const string ERROR_GET_CATEGORY_BY_ID = "An error occurred while getting category.";
+    public const string CATEGORY_GET_BY_ID_ERROR = "An error occurred while getting category.";
     public const string ERROR_UPDATE_CATEGORY = "An error occurred while updating category.";
 
 

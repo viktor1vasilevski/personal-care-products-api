@@ -1,6 +1,7 @@
 ﻿using Main.DTOs.Product;
 using Main.Interfaces;
 using Main.Requests;
+using Main.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
@@ -20,6 +21,13 @@ public class ProductController : ControllerBase
     public IActionResult Get([FromQuery] ProductRequest request)
     {
         var response = _productService.GetProducts(request);
+        return Ok(response);
+    }
+
+    [HttpGet("GetById/{id}")]
+    public IActionResult GetById(Guid id)
+    {
+        var response = _productService.GetProductById(id);
         return Ok(response);
     }
 

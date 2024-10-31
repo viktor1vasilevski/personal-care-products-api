@@ -2,8 +2,14 @@
 
 public static class ProductConstants
 {
-    public const string SUCCESSFULLY_CREATED_PRODUCT = "Product was successfully created.";
-    public const string ERROR_CREATING_PRODUCT = "An error occurred while creating the product.";
+    //ENTITY_STATUS_ACTION
+    public const string PRODUCT_SUCCESSFULLY_CREATED = "Product was successfully created.";
+    public const string PRODUCT_ERROR_CREATING = "An error occurred while creating the product.";
 
     public const string ERROR_RETRIEVING_PRODUCTS = "An error occurred while retrieving the products.";
+
+    public const string PRODUCT_SUCCESSFULLY_RETRIVED = "Product successfully retrived.";
+
+    public const string PRODUCT_GET_BY_ID_INFO = "Product doesn't exist.";
+    public const string PRODUCT_GET_BY_ID_ERROR = "An error occurred while getting product.";
 }
