@@ -131,7 +131,7 @@ public class ProductService : IProductService
         {
             if (_productRepository.Exists(x => x.Id == id))
             {
-                var product = _productRepository.GetAsQueryable(x => x.Id == id).Include(x => x.Subcategory).FirstOrDefault();
+                var product = _productRepository.GetAsQueryable(x => x.Id == id, null, p => p.Include(x => x.Subcategory).ThenInclude(x => x.Category)).FirstOrDefault();
 
                 return new SingleResponse<ProductDTO>()
                 {
@@ -142,11 +142,19 @@ public class ProductService : IProductService
                     {
                         Id = product.Id,
                         Name = product.Name,
+                        Brand = product.Brand,
+                        Description = product.Description,
+                        UnitPrice = product.UnitPrice,
+                        UnitQuantity = product.UnitQuantity,
+                        Volume = product.Volume,
+                        Scent = product.Scent,
+                        Edition = product.Edition,
                         Created = product.Created,
                         CreatedBy = product.CreatedBy,
                         LastModified = product.LastModified,
                         LastModifiedBy = product.LastModifiedBy,
-                        //Subcategories = category.Subcategory?.Select(sc => sc.Name).ToList() ?? new List<string>()
+                        Subcategory = product.Subcategory?.Name,
+                        Category = product.Subcategory?.Category?.Name
                     }
                 };
             }
