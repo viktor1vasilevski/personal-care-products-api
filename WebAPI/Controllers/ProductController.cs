@@ -1,5 +1,6 @@
 ﻿using Main.DTOs.Product;
 using Main.Interfaces;
+using Main.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
@@ -16,9 +17,9 @@ public class ProductController : ControllerBase
 
 
     [HttpGet("Get")]
-    public IActionResult Get(string? category, string? subCategory, int? skip, int? take)
+    public IActionResult Get([FromQuery] ProductRequest request)
     {
-        var response = _productService.GetProducts(category, subCategory, skip, take);
+        var response = _productService.GetProducts(request);
         return Ok(response);
     }
 

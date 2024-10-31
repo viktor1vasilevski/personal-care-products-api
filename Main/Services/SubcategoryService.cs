@@ -68,7 +68,8 @@ public class SubcategoryService : ISubcategoryService
             var status = _subcategoryRepository.Exists(x => x.Id == id);
             if (status)
             {
-                var subcategory = _subcategoryRepository.Get(x => x.Id == id).FirstOrDefault();
+                var subcategory = _subcategoryRepository.GetAsQueryable(x => x.Id == id, null,
+                    x => x.Include(x => x.Products).Include(x => x.Category)).FirstOrDefault();
 
                 return new SingleResponse<SubcategoryDTO>()
                 {
@@ -83,6 +84,7 @@ public class SubcategoryService : ISubcategoryService
                         CreatedBy = subcategory.CreatedBy,
                         LastModified = subcategory.LastModified,
                         LastModifiedBy = subcategory.LastModifiedBy,
+                        Products = subcategory.Products?.Select(p => p.Name).ToList() ?? new List<string>()
                         //Subcategories = category.Subcategory?.Select(sc => sc.Name).ToList() ?? new List<string>()
                     }
                 };

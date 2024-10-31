@@ -5,6 +5,7 @@ using Main.Constants;
 using Main.DTOs.Product;
 using Main.Extensions;
 using Main.Interfaces;
+using Main.Requests;
 using Main.Responses;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,24 +24,23 @@ public class ProductService : IProductService
         _subcategoryRepository = _uow.GetGenericRepository<Subcategory>();
     }
 
-    public QueryResponse<List<ProductDTO>> GetProducts(string? category, string? subCategory, int? skip, int? take)
+    public QueryResponse<List<ProductDTO>> GetProducts(ProductRequest request)
     {
         try
         {
-            var products = _productRepository.GetAsQueryable(null, null,
-                        x => x.Include(x => x.Subcategory).ThenInclude(sc => sc.Category));
-
-            products = products
-                .WhereIf(!String.IsNullOrEmpty(category), x => x.Subcategory.Category.Name.ToLower() == category.ToLower())
-                .WhereIf(!String.IsNullOrEmpty(subCategory), x => x.Subcategory.Name.ToLower() == subCategory.ToLower());
+            var products = _productRepository.GetAsQueryableWhereIf(x => 
+            x.WhereIf(!String.IsNullOrEmpty(request.Category), x => x.Subcategory.Category.Name.ToLower() == request.Category.ToLower())
+             .WhereIf(!String.IsNullOrEmpty(request.SubCategory), x => x.Subcategory.Name.ToLower() == request.SubCategory.ToLower()), 
+            null,
+            x => x.Include(x => x.Subcategory).ThenInclude(sc => sc.Category));
 
             var totalCount = products.Count();
 
-            if (skip.HasValue)
-                products = products.Skip(skip.Value);
+            if (request.Skip.HasValue)
+                products = products.Skip(request.Skip.Value);
 
-            if (take.HasValue)
-                products = products.Take(take.Value);
+            if (request.Take.HasValue)
+                products = products.Take(request.Take.Value);
 
             var productsDTO = products.Select(x => new ProductDTO
             {
