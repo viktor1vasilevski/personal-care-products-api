@@ -27,7 +27,7 @@ public class LibraryDbContext : IdentityDbContext, IDbContext
         var builder = new ConfigurationBuilder()
                                 .SetBasePath(Directory.GetCurrentDirectory())
                                 .AddJsonFile("appsettings.json", optional: false)
-                                .AddJsonFile($"appsetting.{envName}.json", optional: true);
+                                .AddJsonFile($"appsettings.{envName}.json", optional: true);
 
         var conf = builder.Build();
 
