@@ -6,8 +6,10 @@ using Main.DTOs.Category;
 using Main.Enums;
 using Main.Extensions;
 using Main.Interfaces;
+using Main.Requests;
 using Main.Responses;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Main.Services;
 
@@ -21,41 +23,33 @@ public class CategoryService : ICategoryService
         _categoryRepository = _uow.GetGenericRepository<Category>();
     }
 
-    public QueryResponse<List<CategoryDTO>> GetCategories(int? skip, int? take, string? sort, string? name)
+    public QueryResponse<List<CategoryDTO>> GetCategories(CategoryRequest request)
     {
         try
         {
             var categories = _categoryRepository.GetAsQueryableWhereIf(c => c
-                .WhereIf(!String.IsNullOrEmpty(name), x => x.Name.ToLower().Contains(name.ToLower())), 
+                .WhereIf(!String.IsNullOrEmpty(request.Name), x => x.Name.ToLower().Contains(request.Name.ToLower())), 
                 null, 
                 null
-                );          
+                );
 
-            if (!String.IsNullOrEmpty(sort))
+            if (!string.IsNullOrEmpty(request.Sort))
             {
-                switch (sort.ToLower())
+                categories = request.Sort.ToLower() switch
                 {
-                    case "asc":
-                        categories = categories.OrderBy(x => x.Created);
-                        break;
-                    case "desc":
-                        categories = categories.OrderByDescending(x => x.Created);
-                        break;
-
-
-                    default:
-                        categories = categories.OrderByDescending(x => x.Created);
-                        break;
-                }
+                    "asc" => categories.OrderBy(x => x.Created),
+                    "desc" => categories.OrderByDescending(x => x.Created),
+                    _ => categories.OrderByDescending(x => x.Created)
+                };
             }
 
             var totalCount = categories.Count();
 
-            if (skip.HasValue)
-                categories = categories.Skip(skip.Value);
+            if (request.Skip.HasValue)
+                categories = categories.Skip(request.Skip.Value);
 
-            if (take.HasValue)
-                categories = categories.Take(take.Value);
+            if (request.Take.HasValue)
+                categories = categories.Take(request.Take.Value);
 
             var categoriesDTO = categories.Select(x => new CategoryDTO
             {
@@ -298,5 +292,10 @@ public class CategoryService : ICategoryService
                 NotificationType = NotificationType.Error
             };
         }
+    }
+
+    public QueryResponse<List<CategoryDropdownDTO>> GetCategoriesForDropdown(CategoryForDropdownRequest request)
+    {
+        throw new NotImplementedException();
     }
 }

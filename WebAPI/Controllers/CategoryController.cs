@@ -1,5 +1,6 @@
 ﻿using Main.DTOs.Category;
 using Main.Interfaces;
+using Main.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
@@ -16,9 +17,9 @@ public class CategoryController : ControllerBase
 
 
     [HttpGet("Get")]
-    public IActionResult Get(int? skip, int? take, string? sort, string? name)
+    public IActionResult Get([FromQuery] CategoryRequest request)
     {
-        var response = _categoryService.GetCategories(skip, take, sort, name);
+        var response = _categoryService.GetCategories(request);
         return Ok(response);
     }
 
@@ -49,4 +50,6 @@ public class CategoryController : ControllerBase
         var response = _categoryService.DeleteCategory(id);
         return Ok(response);
     }
+
+
 }
