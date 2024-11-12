@@ -2,12 +2,13 @@
 using EntityModels.Interfaces;
 using EntityModels.Models;
 using Main.Constants;
-using Main.DTOs.Category;
 using Main.DTOs.Subcategory;
 using Main.Enums;
 using Main.Interfaces;
+using Main.Requests;
 using Main.Responses;
 using Microsoft.EntityFrameworkCore;
+using Main.Extensions;
 
 namespace Main.Services;
 
@@ -22,17 +23,20 @@ public class SubcategoryService : ISubcategoryService
     }
 
 
-    public QueryResponse<List<SubcategoryDTO>> GetSubcategories(int? skip, int? take)
+    public QueryResponse<List<SubcategoryDTO>> GetSubcategories(SubcategoryRequest request)
     {
         try
         {
-            var subcategories = _subcategoryRepository.GetAsQueryable(null, null, null);
+            var subcategories = _subcategoryRepository.GetAsQueryableWhereIf(x =>
+                x.WhereIf(!String.IsNullOrEmpty(request.Category), x => x.Category.Name.ToLower() == request.Category.ToLower()),
+                null,
+                x => x.Include(x => x.Category));
 
-            if (skip.HasValue)
-                subcategories = subcategories.Skip(skip.Value);
+            if (request.Skip.HasValue)
+                subcategories = subcategories.Skip(request.Skip.Value);
 
-            if (take.HasValue)
-                subcategories = subcategories.Take(take.Value);
+            if (request.Take.HasValue)
+                subcategories = subcategories.Take(request.Take.Value);
 
             var subcategoriesDTO = subcategories.Select(x => new SubcategoryDTO
             {
@@ -173,4 +177,8 @@ public class SubcategoryService : ISubcategoryService
         }
     }
 
+    public SingleResponse<SubcategoryDTO> CreateSubcategory(CreateUpdateSubcategoryDTO request)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -1,4 +1,6 @@
-﻿using Main.Interfaces;
+﻿using Main.DTOs.Subcategory;
+using Main.Interfaces;
+using Main.Requests;
 using Main.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,9 +18,9 @@ public class SubcategoryController : ControllerBase
 
 
     [HttpGet("Get")]
-    public IActionResult Get(int? skip, int? take)
+    public IActionResult Get([FromQuery] SubcategoryRequest request)
     {
-        var response = _subcategoryService.GetSubcategories(skip, take);
+        var response = _subcategoryService.GetSubcategories(request);
         return Ok(response);
     }
 
@@ -33,6 +35,13 @@ public class SubcategoryController : ControllerBase
     public IActionResult Delete(Guid id)
     {
         var response = _subcategoryService.DeleteSubcategory(id);
+        return Ok(response);
+    }
+
+    [HttpPost("Create")]
+    public IActionResult Insert([FromBody] CreateUpdateSubcategoryDTO request)
+    {
+        var response = _subcategoryService.CreateSubcategory(request);
         return Ok(response);
     }
 }
