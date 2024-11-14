@@ -10,6 +10,7 @@ namespace WebAPI.Controllers;
 [ApiController]
 public class ProductController : ControllerBase
 {
+    // random comment
     private readonly IProductService _productService;
     public ProductController(IProductService productService)
     {
