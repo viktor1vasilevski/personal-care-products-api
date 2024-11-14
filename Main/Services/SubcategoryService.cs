@@ -16,10 +16,12 @@ public class SubcategoryService : ISubcategoryService
 {
     private IUnitOfWork<LibraryDbContext> _uow;
     private IGenericRepository<Subcategory> _subcategoryRepository;
+    private IGenericRepository<Category> _categoryRepository;
     public SubcategoryService(IUnitOfWork<LibraryDbContext> uow)
     {
         _uow = uow;
         _subcategoryRepository = _uow.GetGenericRepository<Subcategory>();
+        _categoryRepository = _uow.GetGenericRepository<Category>();
     }
 
 
@@ -179,6 +181,58 @@ public class SubcategoryService : ISubcategoryService
 
     public SingleResponse<SubcategoryDTO> CreateSubcategory(CreateUpdateSubcategoryDTO request)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var category = _categoryRepository.Exists(x => x.Id == request.CategoryId);
+            if (category is false)
+                return new SingleResponse<SubcategoryDTO> 
+                { 
+                    Success = false, 
+                    Message = CategoryConstants.CATEGORY_DOESNT_EXIST,
+                    NotificationType = NotificationType.Info
+                };
+
+            var suncategoryName = _subcategoryRepository.Exists(x => x.Name.ToLower() == request.Name.ToLower());
+            if (suncategoryName)
+                return new SingleResponse<SubcategoryDTO> 
+                { 
+                    Success = false, 
+                    Message = SubcategoryConstants.SUBCATEGORY_EXISTS,
+                    NotificationType = NotificationType.Info
+                };
+
+            var entity = new Subcategory()
+            {
+                Name = request.Name,
+                CategoryId = request.CategoryId
+            };
+
+            _subcategoryRepository.Insert(entity);
+            _uow.SaveChanges();
+
+            return new SingleResponse<SubcategoryDTO>()
+            {
+                Success = true,
+                Message = SubcategoryConstants.SUBCATEGORY_SUCCESSFULLY_CREATED,
+                NotificationType = NotificationType.Success,
+                Data = new SubcategoryDTO
+                {
+                    Id = entity.Id,
+                    Name = entity.Name,
+                    Created = entity.Created,
+                    CreatedBy = entity.CreatedBy
+                }
+            };
+        }
+        catch (Exception ex)
+        {
+            return new SingleResponse<SubcategoryDTO>()
+            {
+                Success = false,
+                Message = SubcategoryConstants.ERROR_CREATING_SUBCATEGORY,
+                ExceptionMessage = ex.Message,
+                NotificationType = NotificationType.Error
+            };
+        }
     }
 }
