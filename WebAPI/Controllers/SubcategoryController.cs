@@ -1,7 +1,6 @@
 ﻿using Main.DTOs.Subcategory;
 using Main.Interfaces;
 using Main.Requests;
-using Main.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;

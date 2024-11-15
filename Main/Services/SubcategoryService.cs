@@ -30,7 +30,8 @@ public class SubcategoryService : ISubcategoryService
         try
         {
             var subcategories = _subcategoryRepository.GetAsQueryableWhereIf(x =>
-                x.WhereIf(!String.IsNullOrEmpty(request.Category), x => x.Category.Name.ToLower() == request.Category.ToLower()),
+                x.WhereIf(!String.IsNullOrEmpty(request.Category), x => x.Category.Name.ToLower() == request.Category.ToLower())
+                 .WhereIf(!String.IsNullOrEmpty(request.Name), x => x.Name.ToLower().Contains(request.Name.ToLower())),
                 null,
                 x => x.Include(x => x.Category));
 
