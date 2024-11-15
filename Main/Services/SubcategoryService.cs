@@ -34,6 +34,18 @@ public class SubcategoryService : ISubcategoryService
                 null,
                 x => x.Include(x => x.Category));
 
+            if (!string.IsNullOrEmpty(request.Sort))
+            {
+                subcategories = request.Sort.ToLower() switch
+                {
+                    "asc" => subcategories.OrderBy(x => x.Created),
+                    "desc" => subcategories.OrderByDescending(x => x.Created),
+                    _ => subcategories.OrderByDescending(x => x.Created)
+                };
+            }
+
+            var totalCount = subcategories.Count();
+
             if (request.Skip.HasValue)
                 subcategories = subcategories.Skip(request.Skip.Value);
 
@@ -53,7 +65,9 @@ public class SubcategoryService : ISubcategoryService
             return new QueryResponse<List<SubcategoryDTO>>() 
             { 
                 Success = true,
-                Data = subcategoriesDTO
+                Data = subcategoriesDTO,
+                NotificationType = NotificationType.Success,
+                TotalCount = totalCount
             };
         }
         catch (Exception ex)
