@@ -4,6 +4,8 @@ public class SubcategoryDTO
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
+    public string Category { get; set; }
+    public Guid CategoryId { get; set; }
     public List<string> Products { get; set; }
     public virtual string CreatedBy { get; set; }
     public virtual DateTime Created { get; set; }

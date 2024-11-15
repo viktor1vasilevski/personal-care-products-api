@@ -9,6 +9,7 @@ using Main.Requests;
 using Main.Responses;
 using Microsoft.EntityFrameworkCore;
 using Main.Extensions;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Main.Services;
 
@@ -30,10 +31,11 @@ public class SubcategoryService : ISubcategoryService
         try
         {
             var subcategories = _subcategoryRepository.GetAsQueryableWhereIf(x =>
-                x.WhereIf(!String.IsNullOrEmpty(request.Category), x => x.Category.Name.ToLower() == request.Category.ToLower())
+                x.WhereIf(!String.IsNullOrEmpty(request.CategoryId.ToString()), x => x.CategoryId == request.CategoryId)
                  .WhereIf(!String.IsNullOrEmpty(request.Name), x => x.Name.ToLower().Contains(request.Name.ToLower())),
                 null,
                 x => x.Include(x => x.Category));
+
 
             if (!string.IsNullOrEmpty(request.Sort))
             {
@@ -57,6 +59,8 @@ public class SubcategoryService : ISubcategoryService
             {
                 Id = x.Id,
                 Name = x.Name,
+                Category = x.Category.Name,
+                CategoryId = x.Category.Id,
                 Created = x.Created,
                 CreatedBy = x.CreatedBy,
                 LastModified = x.LastModified,
@@ -77,7 +81,8 @@ public class SubcategoryService : ISubcategoryService
             { 
                 Success = false, 
                 Message = SubcategoryConstants.ERROR_RETRIEVING_SUBCATEGORIES, 
-                ExceptionMessage = ex.Message 
+                ExceptionMessage = ex.Message,
+                NotificationType = NotificationType.Error
             };
         }
     }
