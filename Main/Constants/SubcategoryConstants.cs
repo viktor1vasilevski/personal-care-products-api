@@ -3,6 +3,7 @@
 public static class SubcategoryConstants
 {
     public const string ERROR_RETRIEVING_SUBCATEGORIES = "An error occurred while retrieving the subcategories.";
+    public const string ERROR_UPDATING_SUBCATEGORY = "An error occurred while updating the subcategory.";
     public const string ERROR_CREATING_SUBCATEGORY = "An error occurred while creating the subcategory.";
 
     public const string ERROR_DELETING_SUBCATEGORY = "An error occurred while deleting subcategory.";
@@ -14,6 +15,7 @@ public static class SubcategoryConstants
 
     public const string SUBCATEGORY_SUCCESSFULLY_DELETED = "Subcategory successfully deleted.";
     public const string SUBCATEGORY_SUCCESSFULLY_CREATED = "Subcategory successfully created.";
+    public const string SUBCATEGORY_SUCCESSFULLY_UPDATED = "Subcategory successfully updated.";
 
 
 

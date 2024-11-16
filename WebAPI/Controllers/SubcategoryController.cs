@@ -1,6 +1,8 @@
-﻿using Main.DTOs.Subcategory;
+﻿using Main.DTOs.Category;
+using Main.DTOs.Subcategory;
 using Main.Interfaces;
 using Main.Requests;
+using Main.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
@@ -41,6 +43,13 @@ public class SubcategoryController : ControllerBase
     public IActionResult Insert([FromBody] CreateUpdateSubcategoryDTO request)
     {
         var response = _subcategoryService.CreateSubcategory(request);
+        return Ok(response);
+    }
+
+    [HttpPut("Update/{id}")]
+    public IActionResult Update(Guid id, [FromBody] CreateUpdateSubcategoryDTO request)
+    {
+        var response = _subcategoryService.UpdateSubcategory(id, request);
         return Ok(response);
     }
 }

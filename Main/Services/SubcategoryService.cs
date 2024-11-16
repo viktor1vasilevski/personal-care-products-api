@@ -9,7 +9,6 @@ using Main.Requests;
 using Main.Responses;
 using Microsoft.EntityFrameworkCore;
 using Main.Extensions;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Main.Services;
 
@@ -250,6 +249,60 @@ public class SubcategoryService : ISubcategoryService
             {
                 Success = false,
                 Message = SubcategoryConstants.ERROR_CREATING_SUBCATEGORY,
+                ExceptionMessage = ex.Message,
+                NotificationType = NotificationType.Error
+            };
+        }
+    }
+
+    public SingleResponse<SubcategoryDTO> UpdateSubcategory(Guid id, CreateUpdateSubcategoryDTO request)
+    {
+        try
+        {
+            var category = _categoryRepository.Exists(x => x.Id == request.CategoryId);
+            if (category is false)
+                return new SingleResponse<SubcategoryDTO>
+                {
+                    Success = false,
+                    Message = CategoryConstants.CATEGORY_DOESNT_EXIST,
+                    NotificationType = NotificationType.Info
+                };
+
+            var suncategoryName = _subcategoryRepository.Exists(x => x.Name.ToLower() == request.Name.ToLower());
+            if (suncategoryName)
+                return new SingleResponse<SubcategoryDTO>
+                {
+                    Success = false,
+                    Message = SubcategoryConstants.SUBCATEGORY_EXISTS,
+                    NotificationType = NotificationType.Info
+                };
+
+            var entity = _subcategoryRepository.GetByID(id);
+            entity.Name = request.Name;
+            entity.CategoryId = request.CategoryId;
+            _subcategoryRepository.Update(entity);
+            _uow.SaveChanges();
+
+            return new SingleResponse<SubcategoryDTO>()
+            {
+                Success = true,
+                Message = SubcategoryConstants.SUBCATEGORY_SUCCESSFULLY_UPDATED,
+                NotificationType = NotificationType.Success,
+                Data = new SubcategoryDTO
+                {
+                    Id = entity.Id,
+                    Name = entity.Name,
+                    Created = entity.Created,
+                    CreatedBy = entity.CreatedBy
+                }
+            };
+        }
+        catch (Exception ex)
+        {
+            return new SingleResponse<SubcategoryDTO>()
+            {
+                Success = false,
+                Message = SubcategoryConstants.ERROR_UPDATING_SUBCATEGORY,
                 ExceptionMessage = ex.Message,
                 NotificationType = NotificationType.Error
             };

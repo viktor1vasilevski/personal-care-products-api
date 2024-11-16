@@ -10,4 +10,5 @@ public interface ISubcategoryService
     SingleResponse<SubcategoryDTO> GetSubcategoryById(Guid id);
     SingleResponse<SubcategoryDTO> DeleteSubcategory(Guid id);
     SingleResponse<SubcategoryDTO> CreateSubcategory(CreateUpdateSubcategoryDTO request);
+    SingleResponse<SubcategoryDTO> UpdateSubcategory(Guid id, CreateUpdateSubcategoryDTO request);
 }
