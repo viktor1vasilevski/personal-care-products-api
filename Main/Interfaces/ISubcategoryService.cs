@@ -1,4 +1,5 @@
-﻿using Main.DTOs.Subcategory;
+﻿using Main.DTOs.Category;
+using Main.DTOs.Subcategory;
 using Main.Requests;
 using Main.Responses;
 
@@ -11,4 +12,5 @@ public interface ISubcategoryService
     SingleResponse<SubcategoryDTO> DeleteSubcategory(Guid id);
     SingleResponse<SubcategoryDTO> CreateSubcategory(CreateUpdateSubcategoryDTO request);
     SingleResponse<SubcategoryDTO> UpdateSubcategory(Guid id, CreateUpdateSubcategoryDTO request);
+    QueryResponse<List<SubcategoryDropdownListDTO>> GetSubcategoriesDropdownList();
 }

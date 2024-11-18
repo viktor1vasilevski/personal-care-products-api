@@ -294,26 +294,22 @@ public class CategoryService : ICategoryService
         }
     }
 
-    public QueryResponse<List<CategoryDropdownDTO>> GetCategoriesForDropdown(CategoryDropdownRequest request)
+    public QueryResponse<List<CategoryDropdownListDTO>> GetCategoriesDropdownList()
     {
         try
         {
-            var categories = _categoryRepository.GetAsQueryableWhereIf(c => c
-                .WhereIf(!String.IsNullOrEmpty(request.Name), x => x.Name.ToLower().Contains(request.Name.ToLower())),
-                null,
-                null
-                );
+            var categories = _categoryRepository.GetAsQueryable(null, null, null);
 
-            var categoriesDTO = categories.Select(x => new CategoryDropdownDTO
+            var categoriesDropdownDTO = categories.Select(x => new CategoryDropdownListDTO
             {
                 Id = x.Id,
                 Name = x.Name
             }).ToList();
 
-            return new QueryResponse<List<CategoryDropdownDTO>>
+            return new QueryResponse<List<CategoryDropdownListDTO>>
             {
                 Success = true,
-                Data = categoriesDTO
+                Data = categoriesDropdownDTO
             };
         }
         catch (Exception)

@@ -30,10 +30,24 @@ public class ProductService : IProductService
         try
         {
             var products = _productRepository.GetAsQueryableWhereIf(x => 
-            x.WhereIf(!String.IsNullOrEmpty(request.Category), x => x.Subcategory.Category.Name.ToLower() == request.Category.ToLower())
-             .WhereIf(!String.IsNullOrEmpty(request.SubCategory), x => x.Subcategory.Name.ToLower() == request.SubCategory.ToLower()), 
+            x.WhereIf(!String.IsNullOrEmpty(request.CategoryId.ToString()), x => x.Subcategory.Category.Id == request.CategoryId)
+             .WhereIf(!String.IsNullOrEmpty(request.SubcategoryId.ToString()), x => x.Subcategory.Id == request.SubcategoryId)
+             .WhereIf(!String.IsNullOrEmpty(request.Name), x => x.Name.ToLower().Contains(request.Name.ToLower()))
+             .WhereIf(!String.IsNullOrEmpty(request.Brand), x => x.Brand.ToLower().Contains(request.Brand.ToLower()))
+             .WhereIf(!String.IsNullOrEmpty(request.Edition), x => x.Edition.ToLower().Contains(request.Edition.ToLower()))
+             .WhereIf(!String.IsNullOrEmpty(request.Scent), x => x.Scent.ToLower().Contains(request.Scent.ToLower())), 
             null,
             x => x.Include(x => x.Subcategory).ThenInclude(sc => sc.Category));
+
+            if (!string.IsNullOrEmpty(request.Sort))
+            {
+                products = request.Sort.ToLower() switch
+                {
+                    "asc" => products.OrderBy(x => x.Created),
+                    "desc" => products.OrderByDescending(x => x.Created),
+                    _ => products.OrderByDescending(x => x.Created)
+                };
+            }
 
             var totalCount = products.Count();
 
@@ -66,7 +80,8 @@ public class ProductService : IProductService
             { 
                 Success = true, 
                 Data = productsDTO, 
-                TotalCount = totalCount
+                TotalCount = totalCount,
+                NotificationType = NotificationType.Success
             };
         }
         catch (Exception ex)
@@ -75,7 +90,8 @@ public class ProductService : IProductService
             { 
                 Success = false, 
                 Message = ProductConstants.ERROR_RETRIEVING_PRODUCTS, 
-                ExceptionMessage = ex.Message 
+                ExceptionMessage = ex.Message,
+                NotificationType = NotificationType.Error
             };
         }
         

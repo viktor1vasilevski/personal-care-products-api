@@ -52,9 +52,9 @@ public class CategoryController : ControllerBase
     }
 
     [HttpGet("GetCategoriesDropdown")]
-    public IActionResult GetCategoriesDropdown([FromQuery] CategoryDropdownRequest request)
+    public IActionResult GetCategoriesDropdown()
     {
-        var response = _categoryService.GetCategoriesForDropdown(request);
+        var response = _categoryService.GetCategoriesDropdownList();
         return Ok(response);
     }
 }

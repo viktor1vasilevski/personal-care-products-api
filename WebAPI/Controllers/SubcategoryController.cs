@@ -52,4 +52,11 @@ public class SubcategoryController : ControllerBase
         var response = _subcategoryService.UpdateSubcategory(id, request);
         return Ok(response);
     }
+
+    [HttpGet("GetSubcategoriesDropdown")]
+    public IActionResult GetSubcategoriesDropdown()
+    {
+        var response = _subcategoryService.GetSubcategoriesDropdownList();
+        return Ok(response);
+    }
 }

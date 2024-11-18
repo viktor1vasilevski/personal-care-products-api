@@ -11,5 +11,5 @@ public interface ICategoryService
     SingleResponse<CategoryDTO> UpdateCategory(Guid id, CreateUpdateCategoryDTO request);
     SingleResponse<CategoryDTO> DeleteCategory(Guid id);
     SingleResponse<CategoryDTO> GetCategoryById(Guid id);
-    QueryResponse<List<CategoryDropdownDTO>> GetCategoriesForDropdown(CategoryDropdownRequest request);
+    QueryResponse<List<CategoryDropdownListDTO>> GetCategoriesDropdownList();
 }

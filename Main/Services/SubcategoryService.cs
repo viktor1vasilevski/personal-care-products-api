@@ -9,6 +9,7 @@ using Main.Requests;
 using Main.Responses;
 using Microsoft.EntityFrameworkCore;
 using Main.Extensions;
+using Main.DTOs.Category;
 
 namespace Main.Services;
 
@@ -306,6 +307,30 @@ public class SubcategoryService : ISubcategoryService
                 ExceptionMessage = ex.Message,
                 NotificationType = NotificationType.Error
             };
+        }
+    }
+    public QueryResponse<List<SubcategoryDropdownListDTO>> GetSubcategoriesDropdownList()
+    {
+        try
+        {
+            var subcategories = _subcategoryRepository.GetAsQueryable(null, null, null);
+
+            var subcategoriesDropdownListDTO = subcategories.Select(x => new SubcategoryDropdownListDTO
+            {
+                Id = x.Id,
+                Name = x.Name
+            }).ToList();
+
+            return new QueryResponse<List<SubcategoryDropdownListDTO>>
+            {
+                Success = true,
+                Data = subcategoriesDropdownListDTO
+            };
+        }
+        catch (Exception)
+        {
+
+            throw;
         }
     }
 }
