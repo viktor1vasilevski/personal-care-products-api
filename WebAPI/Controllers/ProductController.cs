@@ -33,10 +33,10 @@ public class ProductController : ControllerBase
     }
 
     [HttpPost("Create")]
-    public IActionResult Insert(ProductCreateDTO model)
+    public IActionResult Insert([FromBody] ProductCreateDTO model)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        //if (!ModelState.IsValid)
+        //    return BadRequest(ModelState);
 
         var response = _productService.CreateProduct(model);
         return Ok(response);

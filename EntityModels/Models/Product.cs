@@ -12,7 +12,7 @@ public class Product : AuditableBaseEntity
     public int? Volume { get; set; }
     public string? Scent { get; set; }
     public string? Edition { get; set; }
-    //public byte[] ImageData { get; set; }
+    public byte[] Image { get; set; }
     public Guid SubcategoryId { get; set; }
     public virtual Subcategory Subcategory { get; set; }
 }

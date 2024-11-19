@@ -115,7 +115,7 @@ public class ProductService : IProductService
                 Volume = model.Volume,
                 UnitPrice = model.UnitPrice,
                 UnitQuantity = model.UnitQuantity,
-                //ImageData = model.ImageData,
+                //Image = model.Image,
                 SubcategoryId = model.SubcategoryId,
 
             };
