@@ -9,6 +9,8 @@ using Main.Interfaces;
 using Main.Requests;
 using Main.Responses;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Linq;
 
 namespace Main.Services;
 
@@ -67,6 +69,7 @@ public class ProductService : IProductService
                 UnitQuantity = x.UnitQuantity,
                 Volume = x.Volume,
                 Scent = x.Scent,
+                ImageData = x.Image,
                 Edition = x.Edition,
                 Category = x.Subcategory.Category.Name,
                 Subcategory = x.Subcategory.Name,
@@ -101,9 +104,21 @@ public class ProductService : IProductService
     {
         try
         {
-            var subcategory = _subcategoryRepository.GetByID(model.SubcategoryId);
-            if (subcategory is null)
-                return new QueryResponse<ProductCreateDTO> { Success = false, Message = SubcategoryConstants.SUBCATEGORY_DOESNT_EXIST };
+            //var subcategory = _subcategoryRepository.GetByID(model.SubcategoryId);
+            //if (subcategory is null)
+            //    return new QueryResponse<ProductCreateDTO> { Success = false, Message = SubcategoryConstants.SUBCATEGORY_DOESNT_EXIST };
+
+            byte[] imageBytes = null;
+            if (!string.IsNullOrEmpty(model.Image))
+            {
+                // Remove the data URI prefix (if exists) to extract just the Base64 string
+                string base64Data = model.Image.Contains("base64,")
+                    ? model.Image.Substring(model.Image.IndexOf("base64,") + 7)
+                    : model.Image;
+
+                // Convert the Base64 string to a byte array
+                imageBytes = Convert.FromBase64String(base64Data);
+            }
 
             var entity = new Product
             {
@@ -115,7 +130,7 @@ public class ProductService : IProductService
                 Volume = model.Volume,
                 UnitPrice = model.UnitPrice,
                 UnitQuantity = model.UnitQuantity,
-                //Image = model.Image,
+                Image = imageBytes,
                 SubcategoryId = model.SubcategoryId,
 
             };

@@ -27,7 +27,7 @@ public class ProductCreateDTO
     public string? Edition { get; set; }
 
     //[Required(ErrorMessage = "Image is required.")]
-    public byte[]? Image { get; set; }
+    public string Image { get; set; }
 
     public Guid SubcategoryId { get; set; }
 }
