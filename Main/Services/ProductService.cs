@@ -72,6 +72,7 @@ public class ProductService : IProductService
                 Edition = x.Edition,
                 Category = x.Subcategory.Category.Name,
                 Subcategory = x.Subcategory.Name,
+                SubcategoryId = x.SubcategoryId,
                 Created = x.Created,
                 CreatedBy = x.CreatedBy,
                 LastModified = x.LastModified,
@@ -98,13 +99,13 @@ public class ProductService : IProductService
         }
         
     }
-    public QueryResponse<ProductCreateDTO> CreateProduct(ProductCreateDTO model)
+    public SingleResponse<ProductCreateDTO> CreateProduct(ProductCreateDTO model)
     {
         try
         {
             var subcategory = _subcategoryRepository.GetByID(model.SubcategoryId);
             if (subcategory is null)
-                return new QueryResponse<ProductCreateDTO> { Success = false, Message = SubcategoryConstants.SUBCATEGORY_DOESNT_EXIST };
+                return new SingleResponse<ProductCreateDTO> { Success = false, Message = SubcategoryConstants.SUBCATEGORY_DOESNT_EXIST };
 
             byte[] imageBytes = _imageService.ConvertBase64ToBytes(model.Image);
 
@@ -126,7 +127,7 @@ public class ProductService : IProductService
             _productRepository.Insert(entity);
             _uow.SaveChanges();
 
-            return new QueryResponse<ProductCreateDTO>
+            return new SingleResponse<ProductCreateDTO>
             {
                 Success = true,
                 Data = model,
@@ -137,7 +138,7 @@ public class ProductService : IProductService
         }
         catch (Exception ex)
         {
-            return new QueryResponse<ProductCreateDTO>()
+            return new SingleResponse<ProductCreateDTO>()
             {
                 Success = false,
                 Message = ProductConstants.PRODUCT_ERROR_CREATING,
@@ -250,5 +251,10 @@ public class ProductService : IProductService
                 NotificationType = NotificationType.Error
             };
         }
+    }
+
+    public SingleResponse<ProductCreateDTO> UpdateProduct(Guid id, ProductCreateDTO request)
+    {
+        throw new NotImplementedException();
     }
 }

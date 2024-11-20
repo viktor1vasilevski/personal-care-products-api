@@ -14,6 +14,7 @@ public class ProductDTO
     public byte[] ImageData { get; set; }
     public string Category { get; set; }
     public string Subcategory { get; set; }
+    public Guid SubcategoryId { get; set; }
     public virtual string CreatedBy { get; set; }
     public virtual DateTime Created { get; set; }
     public virtual string? LastModifiedBy { get; set; }

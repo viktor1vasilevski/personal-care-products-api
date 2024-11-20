@@ -1,4 +1,5 @@
-﻿using Main.DTOs.Product;
+﻿using Main.DTOs.Category;
+using Main.DTOs.Product;
 using Main.Interfaces;
 using Main.Requests;
 using Main.Services;
@@ -46,6 +47,13 @@ public class ProductController : ControllerBase
     public IActionResult Delete(Guid id)
     {
         var response = _productService.DeleteProduct(id);
+        return Ok(response);
+    }
+
+    [HttpPut("Update/{id}")]
+    public IActionResult Update(Guid id, [FromBody] ProductCreateDTO request)
+    {
+        var response = _productService.UpdateProduct(id, request);
         return Ok(response);
     }
 
