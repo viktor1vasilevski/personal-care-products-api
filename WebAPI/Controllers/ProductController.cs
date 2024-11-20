@@ -42,4 +42,11 @@ public class ProductController : ControllerBase
         return Ok(response);
     }
 
+    [HttpDelete("Delete/{id}")]
+    public IActionResult Delete(Guid id)
+    {
+        var response = _productService.DeleteProduct(id);
+        return Ok(response);
+    }
+
 }

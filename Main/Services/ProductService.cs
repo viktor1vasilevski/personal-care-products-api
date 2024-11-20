@@ -9,8 +9,6 @@ using Main.Interfaces;
 using Main.Requests;
 using Main.Responses;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Linq;
 
 namespace Main.Services;
 
@@ -28,7 +26,6 @@ public class ProductService : IProductService
         _subcategoryRepository = _uow.GetGenericRepository<Subcategory>();
         _imageService = imageService;
     }
-
     public QueryResponse<List<ProductDTO>> GetProducts(ProductRequest request)
     {
         try
@@ -101,7 +98,6 @@ public class ProductService : IProductService
         }
         
     }
-
     public QueryResponse<ProductCreateDTO> CreateProduct(ProductCreateDTO model)
     {
         try
@@ -150,7 +146,6 @@ public class ProductService : IProductService
             };
         }
     }
-
     public SingleResponse<ProductDTO> GetProductById(Guid id)
     {
         try
@@ -200,6 +195,57 @@ public class ProductService : IProductService
             {
                 Success = false,
                 Message = ProductConstants.PRODUCT_GET_BY_ID_ERROR,
+                ExceptionMessage = ex.Message,
+                NotificationType = NotificationType.Error
+            };
+        }
+    }
+    public SingleResponse<ProductDTO> DeleteProduct(Guid id)
+    {
+        try
+        {
+            if (_productRepository.Exists(x => x.Id == id))
+            {
+                var category = _productRepository.GetAsQueryable(x => x.Id == id).Include(x => x.Subcategory).FirstOrDefault();
+
+                if (category.Subcategory.Name == "UNCATEGORIZED")
+                {
+                    _productRepository.Delete(category);
+                    _uow.SaveChanges();
+
+                    return new SingleResponse<ProductDTO>()
+                    {
+                        Success = true,
+                        Message = ProductConstants.PRODUCT_SUCCESSFULLY_DELETED,
+                        NotificationType = NotificationType.Success
+                    };
+                }
+                else
+                {
+                    return new SingleResponse<ProductDTO>()
+                    {
+                        Success = true,
+                        Message = ProductConstants.PRODUCT_CANT_BE_DELETED,
+                        NotificationType = NotificationType.Info
+                    };
+                }
+            }
+            else
+            {
+                return new SingleResponse<ProductDTO>()
+                {
+                    Success = false,
+                    Message = ProductConstants.PRODUCT_DOESNT_EXIST,
+                    NotificationType = NotificationType.Info
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            return new SingleResponse<ProductDTO>()
+            {
+                Success = false,
+                Message = ProductConstants.PRODUCT_DELETE_ERROR,
                 ExceptionMessage = ex.Message,
                 NotificationType = NotificationType.Error
             };

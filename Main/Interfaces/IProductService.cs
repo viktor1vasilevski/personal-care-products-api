@@ -10,4 +10,5 @@ public interface IProductService
     QueryResponse<List<ProductDTO>> GetProducts(ProductRequest request);
     SingleResponse<ProductDTO> GetProductById(Guid id);
     QueryResponse<ProductCreateDTO> CreateProduct(ProductCreateDTO model);
+    SingleResponse<ProductDTO> DeleteProduct(Guid id);
 }
