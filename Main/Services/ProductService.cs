@@ -19,12 +19,14 @@ public class ProductService : IProductService
     private readonly IUnitOfWork<LibraryDbContext> _uow;
     private readonly IGenericRepository<Product> _productRepository;
     private readonly IGenericRepository<Subcategory> _subcategoryRepository;
+    private readonly IImageService _imageService;
 
-    public ProductService(IUnitOfWork<LibraryDbContext> uow)
+    public ProductService(IUnitOfWork<LibraryDbContext> uow, IImageService imageService)
     {
         _uow = uow;
         _productRepository = _uow.GetGenericRepository<Product>();
         _subcategoryRepository = _uow.GetGenericRepository<Subcategory>();
+        _imageService = imageService;
     }
 
     public QueryResponse<List<ProductDTO>> GetProducts(ProductRequest request)
@@ -104,21 +106,11 @@ public class ProductService : IProductService
     {
         try
         {
-            //var subcategory = _subcategoryRepository.GetByID(model.SubcategoryId);
-            //if (subcategory is null)
-            //    return new QueryResponse<ProductCreateDTO> { Success = false, Message = SubcategoryConstants.SUBCATEGORY_DOESNT_EXIST };
+            var subcategory = _subcategoryRepository.GetByID(model.SubcategoryId);
+            if (subcategory is null)
+                return new QueryResponse<ProductCreateDTO> { Success = false, Message = SubcategoryConstants.SUBCATEGORY_DOESNT_EXIST };
 
-            byte[] imageBytes = null;
-            if (!string.IsNullOrEmpty(model.Image))
-            {
-                // Remove the data URI prefix (if exists) to extract just the Base64 string
-                string base64Data = model.Image.Contains("base64,")
-                    ? model.Image.Substring(model.Image.IndexOf("base64,") + 7)
-                    : model.Image;
-
-                // Convert the Base64 string to a byte array
-                imageBytes = Convert.FromBase64String(base64Data);
-            }
+            byte[] imageBytes = _imageService.ConvertBase64ToBytes(model.Image);
 
             var entity = new Product
             {
@@ -142,7 +134,9 @@ public class ProductService : IProductService
             {
                 Success = true,
                 Data = model,
-                Message = ProductConstants.PRODUCT_SUCCESSFULLY_CREATED
+                Message = ProductConstants.PRODUCT_SUCCESSFULLY_CREATED,
+                NotificationType = NotificationType.Success
+
             };
         }
         catch (Exception ex)
@@ -151,7 +145,8 @@ public class ProductService : IProductService
             {
                 Success = false,
                 Message = ProductConstants.PRODUCT_ERROR_CREATING,
-                ExceptionMessage = ex.Message
+                ExceptionMessage = ex.Message,
+                NotificationType = NotificationType.Error
             };
         }
     }
