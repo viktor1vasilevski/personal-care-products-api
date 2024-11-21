@@ -14,4 +14,20 @@ public class ImageService : IImageService
 
         return Convert.FromBase64String(base64Data);
     }
+
+    public string ExtractImageType(string base64String)
+    {
+        if (string.IsNullOrEmpty(base64String)) return null;
+
+        var imageData = base64String.Split(";");
+        var imageType = imageData[0].Split("/");
+
+        if (imageType[1] == "jpeg")
+        {
+            return "jpg";
+        }
+
+        return imageType[1];
+    }
+
 }

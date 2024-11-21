@@ -14,5 +14,6 @@ public class Product : AuditableBaseEntity
     public string? Edition { get; set; }
     public byte[] Image { get; set; }
     public Guid SubcategoryId { get; set; }
+    public string? ImageType { get; set; }
     public virtual Subcategory Subcategory { get; set; }
 }

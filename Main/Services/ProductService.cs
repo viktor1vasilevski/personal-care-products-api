@@ -69,6 +69,7 @@ public class ProductService : IProductService
                 Volume = x.Volume,
                 Scent = x.Scent,
                 ImageData = x.Image,
+                ImageType = x.ImageType,
                 Edition = x.Edition,
                 Category = x.Subcategory.Category.Name,
                 Subcategory = x.Subcategory.Name,
@@ -107,6 +108,7 @@ public class ProductService : IProductService
             if (subcategory is null)
                 return new SingleResponse<ProductCreateDTO> { Success = false, Message = SubcategoryConstants.SUBCATEGORY_DOESNT_EXIST };
 
+            string imageType = _imageService.ExtractImageType(model.Image);
             byte[] imageBytes = _imageService.ConvertBase64ToBytes(model.Image);
 
             var entity = new Product
@@ -120,8 +122,8 @@ public class ProductService : IProductService
                 UnitPrice = model.UnitPrice,
                 UnitQuantity = model.UnitQuantity,
                 Image = imageBytes,
+                ImageType = imageType,
                 SubcategoryId = model.SubcategoryId,
-
             };
 
             _productRepository.Insert(entity);

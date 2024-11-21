@@ -12,6 +12,7 @@ public class ProductDTO
     public string? Scent { get; set; }
     public string? Edition { get; set; }
     public byte[] ImageData { get; set; }
+    public string? ImageType { get; set; }
     public string Category { get; set; }
     public string Subcategory { get; set; }
     public Guid SubcategoryId { get; set; }
