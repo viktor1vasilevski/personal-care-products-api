@@ -290,7 +290,20 @@ public class ProductService : IProductService
                 {
                     Success = true,
                     Message = ProductConstants.PRODUCT_SUCCESSFULLY_UPDATED,
-                    NotificationType = NotificationType.Success
+                    NotificationType = NotificationType.Success,
+                    Data = new ProductCreateDTO
+                    {
+                        Name = product.Name,
+                        Brand = product.Brand,
+                        Description = product.Description,
+                        UnitPrice = product.UnitPrice,
+                        UnitQuantity = product.UnitQuantity,
+                        Volume = product.Volume,
+                        Scent = product.Scent,
+                        Edition = product.Edition,
+                        SubcategoryId = product.SubcategoryId,
+                        Image = request.Image
+                    }
                 };
             }
             else
