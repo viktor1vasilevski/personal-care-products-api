@@ -48,7 +48,7 @@ builder.Services.AddCors(policy => policy.AddPolicy("MyPolicy", builder =>
 builder.Services.AddDbContext<LibraryDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddIdentityInfrastructure();
+builder.Services.AddIdentityInfrastructure(builder.Configuration);
 
 builder.Services.AddScoped(typeof(IUnitOfWork<>), typeof(SqlUnitOfWork<>));
 
@@ -57,6 +57,8 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ISubcategoryService, SubcategoryService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IImageService, ImageService>();
+
+builder.Services.AddHttpContextAccessor();
 
 
 var app = builder.Build();
@@ -72,9 +74,9 @@ app.UseHttpsRedirection();
 
 app.UseCors("MyPolicy");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseAuthentication();
 
 app.MapControllers();
 

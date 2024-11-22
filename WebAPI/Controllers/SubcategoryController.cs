@@ -3,6 +3,8 @@ using Main.DTOs.Subcategory;
 using Main.Interfaces;
 using Main.Requests;
 using Main.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
@@ -33,6 +35,7 @@ public class SubcategoryController : ControllerBase
     }
 
     [HttpDelete("Delete/{id}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     public IActionResult Delete(Guid id)
     {
         var response = _subcategoryService.DeleteSubcategory(id);
@@ -40,6 +43,7 @@ public class SubcategoryController : ControllerBase
     }
 
     [HttpPost("Create")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     public IActionResult Insert([FromBody] CreateUpdateSubcategoryDTO request)
     {
         var response = _subcategoryService.CreateSubcategory(request);
@@ -47,6 +51,7 @@ public class SubcategoryController : ControllerBase
     }
 
     [HttpPut("Update/{id}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     public IActionResult Update(Guid id, [FromBody] CreateUpdateSubcategoryDTO request)
     {
         var response = _subcategoryService.UpdateSubcategory(id, request);

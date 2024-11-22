@@ -1,6 +1,8 @@
 ﻿using Main.DTOs.Category;
 using Main.Interfaces;
 using Main.Requests;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
@@ -31,6 +33,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPost("Create")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     public IActionResult Insert([FromBody] CreateUpdateCategoryDTO request)
     {
         var response = _categoryService.CreateCategory(request);
@@ -38,6 +41,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPut("Update/{id}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     public IActionResult Update(Guid id, [FromBody] CreateUpdateCategoryDTO request)
     {
         var response = _categoryService.UpdateCategory(id, request);
@@ -45,6 +49,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpDelete("Delete/{id}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     public IActionResult Delete(Guid id)
     {
         var response = _categoryService.DeleteCategory(id);
@@ -57,4 +62,5 @@ public class CategoryController : ControllerBase
         var response = _categoryService.GetCategoriesDropdownList();
         return Ok(response);
     }
+
 }

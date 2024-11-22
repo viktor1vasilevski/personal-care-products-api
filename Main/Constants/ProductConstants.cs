@@ -4,6 +4,7 @@ public static class ProductConstants
 {
     //ENTITY_STATUS_ACTION
     public const string PRODUCT_SUCCESSFULLY_CREATED = "Product was successfully created.";
+    public const string PRODUCT_SUCCESSFULLY_UPDATED = "Product was successfully updated.";
     public const string PRODUCT_ERROR_CREATING = "An error occurred while creating the product.";
 
     public const string ERROR_RETRIEVING_PRODUCTS = "An error occurred while retrieving the products.";
@@ -18,4 +19,6 @@ public static class ProductConstants
 
     public const string PRODUCT_DOESNT_EXIST = "Product doesn't exist.";
     public const string PRODUCT_CANT_BE_DELETED = "Product can't be deleted. Only products with \"UNCATEGORIZED\" subcategory can be deleted.";
+
+    public static string PRODUCT_UPDATE_ERROR = "An error occurred while updating product.";
 }

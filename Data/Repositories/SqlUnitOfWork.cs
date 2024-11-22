@@ -8,9 +8,17 @@ public class SqlUnitOfWork<TContext> : IDisposable, IUnitOfWork<TContext> where 
 {
     private TContext _context;
     private bool disposed = false;
-    public SqlUnitOfWork()
+
+    // this constructor was because the service instance of IHttpContextAccessor was not being passed to the constructor
+    // and the original code was like this, not the constructor below
+    //public SqlUnitOfWork()
+    //{
+    //    _context = new TContext();
+    //}
+
+    public SqlUnitOfWork(TContext context)
     {
-        _context = new TContext();
+        _context = context;
     }
 
     public void DetachAllEntities()

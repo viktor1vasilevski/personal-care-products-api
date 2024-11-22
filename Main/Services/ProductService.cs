@@ -9,6 +9,7 @@ using Main.Interfaces;
 using Main.Requests;
 using Main.Responses;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.Eventing.Reader;
 
 namespace Main.Services;
 
@@ -257,6 +258,60 @@ public class ProductService : IProductService
 
     public SingleResponse<ProductCreateDTO> UpdateProduct(Guid id, ProductCreateDTO request)
     {
-        throw new NotImplementedException();
+        try
+        {
+            if (_productRepository.Exists(x => x.Id == id))
+            {
+                var subcategory = _subcategoryRepository.Exists(x => x.Id == request.SubcategoryId);
+                if (!subcategory)
+                    return new SingleResponse<ProductCreateDTO> { Success = false, Message = SubcategoryConstants.SUBCATEGORY_DOESNT_EXIST, NotificationType = NotificationType.Info };
+
+                var product = _productRepository.GetByID(id);
+
+                string imageType = _imageService.ExtractImageType(request.Image);
+                byte[] imageBytes = _imageService.ConvertBase64ToBytes(request.Image);
+
+                product.Name = request.Name;
+                product.Brand = request.Brand;
+                product.Description = request.Description;
+                product.UnitPrice = request.UnitPrice;
+                product.UnitQuantity = request.UnitQuantity;
+                product.Volume = request.Volume;
+                product.Scent = request.Scent;
+                product.Edition = request.Edition;
+                product.SubcategoryId = request.SubcategoryId;
+                product.Image = imageBytes;
+                product.ImageType = imageType;  
+                
+                _productRepository.Update(product);
+                _uow.SaveChanges();
+
+                return new SingleResponse<ProductCreateDTO>
+                {
+                    Success = true,
+                    Message = ProductConstants.PRODUCT_SUCCESSFULLY_UPDATED,
+                    NotificationType = NotificationType.Success
+                };
+            }
+            else
+            {
+                return new SingleResponse<ProductCreateDTO>
+                {
+                    Success = false,
+                    Message = ProductConstants.PRODUCT_DOESNT_EXIST,
+                    NotificationType = NotificationType.Info
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            return new SingleResponse<ProductCreateDTO>()
+            {
+                Success = false,
+                Message = ProductConstants.PRODUCT_UPDATE_ERROR,
+                ExceptionMessage = ex.Message,
+                NotificationType = NotificationType.Error
+            };
+        }
     }
 }
